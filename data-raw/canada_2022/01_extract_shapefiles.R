@@ -37,7 +37,7 @@ for (i in provinces_not_extacted){
     i,
     "/",
     toupper(substr(i, 1, 2)),
-    c("propo.zip", ".zip")
+    c("final.zip", ".zip")
   )
   ### If folder `data/canada_2022/zip_containing_shp` does not exist, create.
   if (!dir.exists(destination_folder)) {
@@ -48,7 +48,8 @@ for (i in provinces_not_extacted){
     expr = download.file(zip_urls[1], destfile = paste0(destination_folder, i, ".zip")),
     error = function(e) download.file(zip_urls[2], destfile = paste0(destination_folder, i, ".zip"))
   )
-  print(i)
+  message("-------------------\n", i, "\n-------------------")
+  Sys.sleep(1)
 }
 
 # Extract zip files as normal folders ------------------------------------
