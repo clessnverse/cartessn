@@ -25,8 +25,7 @@ provinces <- sub("^/com/([a-z]{2,3})/.*", "\\1", provinces_urls)
 
 ## example url: https://redecoupage-redistribution-2022.ca/com/nl/NLpropo.zip
 
-destination_folder <- "data-raw/data/canada_2022/zip_containing_shp/"
-
+destination_folder <- "data-raw/data/canada_2022/shapefiles/"
 
 ## Only try to extract provinces that are not yet extracted
 provinces_extracted <- gsub("\\.zip", "", list.files(destination_folder))
@@ -51,3 +50,15 @@ for (i in provinces_not_extacted){
   )
   print(i)
 }
+
+# Extract zip files as normal folders ------------------------------------
+
+zip_files <- list.files(destination_folder, pattern = "\\.zip$", full.names = TRUE)
+
+# Extraire chaque ZIP dans un dossier du même nom (sans .zip)
+lapply(zip_files, function(zip) {
+  dossier_sortie <- file.path(destination_folder, tools::file_path_sans_ext(basename(zip)))
+  dir.create(dossier_sortie, showWarnings = FALSE)
+  unzip(zip, exdir = dossier_sortie)
+  unlink(zip)
+})
