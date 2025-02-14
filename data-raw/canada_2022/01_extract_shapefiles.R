@@ -23,6 +23,31 @@ provinces <- sub("^/com/([a-z]{2,3})/.*", "\\1", provinces_urls)
 
 # Extract zip files containing shapefiles ------------------------------------------------------
 
+## example url: https://redecoupage-redistribution-2022.ca/com/nl/NLpropo.zip
+
+destination_folder <- "data-raw/data/canada_2022/zip_containing_shp/"
 
 
-### If folder `data/canada_2022` does not exist, create.
+## Only try to extract provinces that are not yet extracted
+provinces_extracted <- gsub("\\.zip", "", list.files(destination_folder))
+provinces_not_extacted <- provinces[!(provinces %in% provinces_extracted)]
+
+for (i in provinces_not_extacted){
+  zip_urls <- paste0(
+    "https://redecoupage-redistribution-2022.ca/com/",
+    i,
+    "/",
+    toupper(substr(i, 1, 2)),
+    c("propo.zip", ".zip")
+  )
+  ### If folder `data/canada_2022/zip_containing_shp` does not exist, create.
+  if (!dir.exists(destination_folder)) {
+    dir.create(destination_folder, recursive = TRUE)
+  }
+  ### download zip file
+  tryCatch(
+    expr = download.file(zip_urls[1], destfile = paste0(destination_folder, i, ".zip")),
+    error = function(e) download.file(zip_urls[2], destfile = paste0(destination_folder, i, ".zip"))
+  )
+  print(i)
+}
