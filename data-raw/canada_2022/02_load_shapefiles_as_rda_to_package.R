@@ -65,6 +65,6 @@ df_territories_shapefiles <- sf::st_read("data-raw/data/canada_2013/decoupage_20
   )
   
 
-df_output <- rbind(df_shapefiles_together, df_territories_shapefiles)
+spatial_canada_2022_electoral_ridings <- rbind(df_shapefiles_together, df_territories_shapefiles)
 
-save(df_output, file = "data/spatial_canada_2022_electoral_ridings.rda", compress = "bzip2")
+save(spatial_canada_2022_electoral_ridings, file = "data/spatial_canada_2022_electoral_ridings.rda", compress = "bzip2")
