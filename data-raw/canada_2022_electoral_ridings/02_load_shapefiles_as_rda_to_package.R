@@ -44,7 +44,7 @@ df_shapefiles_together <- lapply(
 df_territories_shapefiles <- sf::st_read("data-raw/data/canada_2013_electoral_ridings/files/lfed000a16a_e.shp") |> 
   ## filter for territories only
   filter(
-    `CÉFIDU` %in% c(
+    `FEDUID` %in% c(
       60001,
       61001,
       62001
@@ -52,15 +52,15 @@ df_territories_shapefiles <- sf::st_read("data-raw/data/canada_2013_electoral_ri
   ) |> 
   mutate(
     id_province = case_when(
-      `CÉFIDU` == 60001 ~ "YT",
-      `CÉFIDU` == 61001 ~ "NT",
-      `CÉFIDU` == 62001 ~ "NU"
+      `FEDUID` == 60001 ~ "YT",
+      `FEDUID` == 61001 ~ "NT",
+      `FEDUID` == 62001 ~ "NU"
     )
   ) |> 
   select(
-    id_riding = `CÉFIDU`,
-    name_riding_en = `CÉFANOM`,
-    name_riding_fr = `CÉFFNOM`,
+    id_riding = `FEDUID`,
+    name_riding_en = `FEDENAME`,
+    name_riding_fr = `FEDFNAME`,
     id_province,
     geometry
   )
