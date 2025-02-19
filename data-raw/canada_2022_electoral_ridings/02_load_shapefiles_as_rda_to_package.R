@@ -36,11 +36,12 @@ df_shapefiles_together <- lapply(
 #### Exemple: 24020 et 24023 (Côte-Nord et Gaspésie)
 
 ### AJOUTER LES TERRITOIRES
-#### J'ai manuellement downloadé et unzippé les fichiers dans "data-raw/data/canada_2013".
-#### Ce dossier contient les shapefiles des circonscriptions du redécoupage de 2013,
-#### et il contient donc les circonscriptions des territoires (qui n'ont pas changé en 2022).
+#### Puisque les territoires n'ont pas été affectés par le redécoupage, le site web où
+#### je suis allé chercher les shapefiles des nouvelles circonscriptions n'a pas inclus les territoires.
+#### Il faut donc aller les chercher du redécoupage précédent, celui de 2013.
+#### On peut aller extraire les shapefiles de 2013 dans le script `data-raw/canada_2013_electoral_ridings/01_extract_shapefiles.R`
 
-df_territories_shapefiles <- sf::st_read("data-raw/data/canada_2013_electoral_ridings/decoupage_2013.shp") |> 
+df_territories_shapefiles <- sf::st_read("data-raw/data/canada_2013_electoral_ridings/files/lfed000a16a_e.shp") |> 
   ## filter for territories only
   filter(
     `CÉFIDU` %in% c(
