@@ -39,7 +39,7 @@ for (i in provinces_not_extacted){
     toupper(substr(i, 1, 2)),
     c("final.zip", ".zip")
   )
-  ### If folder `data/canada_2022/zip_containing_shp` does not exist, create.
+  ### If the destination folder does not exist, create.
   if (!dir.exists(destination_folder)) {
     dir.create(destination_folder, recursive = TRUE)
   }
