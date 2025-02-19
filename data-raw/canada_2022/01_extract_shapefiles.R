@@ -25,7 +25,7 @@ provinces <- sub("^/com/([a-z]{2,3})/.*", "\\1", provinces_urls)
 
 ## example url: https://redecoupage-redistribution-2022.ca/com/nl/NLpropo.zip
 
-destination_folder <- "data-raw/data/canada_2022/shapefiles/"
+destination_folder <- "data-raw/data/canada_2022_electoral_ridings/shapefiles/"
 
 ## Only try to extract provinces that are not yet extracted
 provinces_extracted <- gsub("\\.zip", "", list.files(destination_folder))
