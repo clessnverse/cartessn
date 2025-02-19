@@ -6,7 +6,7 @@ library(dplyr)
 
 # List files to merge together -------------------------------------------------------------
 files <- list.files(
-  "data-raw/data/canada_2022/shapefiles/",
+  "data-raw/data/canada_2022_electoral_ridings/shapefiles/",
   pattern = ".shp$",
   full.names = TRUE,
   recursive = TRUE
@@ -40,7 +40,7 @@ df_shapefiles_together <- lapply(
 #### Ce dossier contient les shapefiles des circonscriptions du redécoupage de 2013,
 #### et il contient donc les circonscriptions des territoires (qui n'ont pas changé en 2022).
 
-df_territories_shapefiles <- sf::st_read("data-raw/data/canada_2013/decoupage_2013.shp") |> 
+df_territories_shapefiles <- sf::st_read("data-raw/data/canada_2013_electoral_ridings/decoupage_2013.shp") |> 
   ## filter for territories only
   filter(
     `CÉFIDU` %in% c(
@@ -63,7 +63,6 @@ df_territories_shapefiles <- sf::st_read("data-raw/data/canada_2013/decoupage_20
     id_province,
     geometry
   )
-  
 
 spatial_canada_2022_electoral_ridings <- rbind(df_shapefiles_together, df_territories_shapefiles)
 
