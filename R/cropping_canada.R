@@ -62,7 +62,7 @@ city_mapping_canada_2025 <- list(
       "24060", # Repentigny
       "24078"  # Vimy
     ),
-    "coordinates" = c("xmin" = -74.05, "xmax" = -73.45, "ymin" = 45.43, "ymax" = 45.70)
+    "coordinates" = c("xmin" = -74.05, "xmax" = -73.45, "ymin" = 45.41, "ymax" = 45.70)
   )
 )
 
