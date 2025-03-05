@@ -60,11 +60,22 @@ city_mapping_canada_2025 <- list(
       "24077", # Ville-Marie—Le Sud-Ouest—Île-des-Soeurs
       "24073", # Terrebonne
       "24060", # Repentigny
-      "24031", # La prairie
       "24078"  # Vimy
     ),
-    "coordinates" = c("xmin" = -74.05, "xmax" = -73.45, "ymin" = 45.40, "ymax" = 45.70)
-  )
+    "coordinates" = c("xmin" = -74.05, "xmax" = -73.45, "ymin" = 45.42, "ymax" = 45.70)
+  ),
+  "kitchener_waterloo" = list(
+   "ridings" = c(
+     "35048", # Kitchener Centre
+     "35049", # Kitchener—Conestoga
+     "35050", # Kitchener South—Hespeler
+     "35114", # Waterloo
+     "35019", # Cambridge
+     "35115", # Wellington—Halton Hills North
+     "35033"  # Guelph
+   ),
+   "coordinates" = c("xmin" = -80.8, "xmax" = -80.2, "ymin" = 43.3, "ymax" = 43.7)
+ )
 )
 
 
@@ -145,3 +156,4 @@ crop_map <- function(
   spatial_dataframe_cropped <- suppressWarnings(sf::st_crop(spatial_dataframe_filtered, crop_factor))
   return(spatial_dataframe_cropped)
 }
+
