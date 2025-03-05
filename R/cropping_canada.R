@@ -60,7 +60,7 @@ city_mapping_canada_2025 <- list(
       "24077", # Ville-Marie—Le Sud-Ouest—Île-des-Soeurs
       "24073", # Terrebonne
       "24060", # Repentigny
-      "24032", # La prairie
+      "24031", # La prairie
       "24078"  # Vimy
     ),
     "coordinates" = c("xmin" = -74.05, "xmax" = -73.45, "ymin" = 45.40, "ymax" = 45.70)
