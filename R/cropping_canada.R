@@ -17,40 +17,47 @@
 city_mapping_canada_2025 <- list(
   "quebec_city" = list(
     "ridings" = c(
-      "24016",
-      "24042",
-      "24043",
-      "24059"
+      "24016", # Charlesbourg—Haute-Saint-Charles
+      "24042", # Louis-Hébert
+      "24059", # Québec Centre
+      "24043"  # Louis-Saint-Laurent—Akiawenhrahk
     ),
     "coordinates" = c("xmin" = -71.6, "xmax" = -71.1, "ymin" = 46.7, "ymax" = 47)
   ),
-  
   "montreal" = list(
     "ridings" = c(
       "24003", # Ahuntsic-Cartierville
       "24004", # Alfred-Pellan
-      "24015", # Bourassa
-      "24017", # Brossard–Saint-Lambert
-      "24024", # Dorval–Lachine–LaSalle
-      "24028", # Hochelaga
-      "24029", # Honoré-Mercier
-      "24033", # La Pointe-de-l'Île
-      "24036", # Lac-Saint-Louis
-      "24037", # LaSalle–Émard–Verdun
-      "24039", # Laurier–Sainte-Marie
-      "24040", # Laval–Les Îles
-      "24041", # Longueuil–Charles-LeMoyne
-      "24043", # Longueuil–Saint-Hubert
-      "24052", # Mont-Royal
-      "24053", # Notre-Dame-de-Grâce–Westmount
-      "24054", # Outremont
-      "24055", # Papineau
-      "24056", # Pierrefonds–Dollard
-      "24064", # Rosemont–La Petite-Patrie
-      "24065", # Marc-Aurèle-Fortin
+      "24013", # Bourassa
+      "24015", # Brossard—Saint-Lambert
+      "24017", # Châteauguay—Les Jardins-de-Napierville
+      "24021", # Dorval—Lachine
+      "24025", # Hochelaga
+      "24026", # Honoré-Mercier
+      "24030", # La Pointe-de-l'Île
+      "24033", # Lac-Saint-Louis
+      "24034", # LaSalle—Verdun
+      "24036", # Laurier—Sainte-Marie
+      "24037", # Laval—Les Îles
+      "24040", # Longueuil—Charles-LeMoyne
+      "24041", # Longueuil—Saint-Hubert
+      "24044", # Marc-Aurèle-Fortin
+      "24046", # Mirabel
+      "24047", # Mount Royal
+      "24048", # Montarville
+      "24052", # Notre-Dame-de-Grâce—Westmount
+      "24053", # Outremont
+      "24054", # Papineau
+      "24055", # Pierre-Boucher—Les Patriotes—Verchères
+      "24056", # Pierrefonds—Dollard
+      "24063", # Rivière-des-Mille-Îles
+      "24064", # Rivière-du-Nord
+      "24065", # Rosemont—La Petite-Patrie
       "24068", # Saint-Laurent
-      "24069", # Saint-Léonard–Saint-Michel
-      "24077", # Ville-Marie–Le Sud-Ouest–Île-des-Soeurs
+      "24069", # Saint-Léonard—Saint-Michel
+      "24074", # Thérèse-De Blainville
+      "24076", # Vaudreuil
+      "24077", # Ville-Marie—Le Sud-Ouest—Île-des-Soeurs
       "24078"  # Vimy
     ),
     "coordinates" = c("xmin" = -74.05, "xmax" = -73.45, "ymin" = 45.30, "ymax" = 45.75)
