@@ -73,16 +73,16 @@ crop_map <- function(
   for (i in names(city_mapping_object)) {
     if (!is.list(city_mapping_object[[i]]) || 
         !all(c("ridings", "coordinates") %in% names(city_mapping_object[[i]]))) {
-      stop(paste0("city_mapping_object[[", i, "]] must be a list with 'ridings' and 'coordinates' as names. You can copy the structure of cartessn::city_mapping_canada_2025[[", i, "]]."))
+      stop(paste0("city_mapping_object[['", i, "']] must be a list with 'ridings' and 'coordinates' as names. You can copy the structure of cartessn::city_mapping_canada_2025."))
     }
     if (!is.character(city_mapping_object[[i]]$ridings)) {
-      stop(paste0("city_mapping_object[[", i, "]]$ridings must be a character vector. You can copy the structure of cartessn::city_mapping_canada_2025[[", i, "]]$ridings."))
+      stop(paste0("city_mapping_object[['", i, "']]$ridings must be a character vector. You can copy the structure of cartessn::city_mapping_canada_2025."))
     }
     if (!is.numeric(city_mapping_object[[i]]$coordinates)) {
-      stop(paste0("city_mapping_object[[", i, "]]$coordinates must be a numeric vector. You can copy the structure of cartessn::city_mapping_canada_2025[[", i, "]]$coordinates."))
+      stop(paste0("city_mapping_object[['", i, "']]$coordinates must be a numeric vector. You can copy the structure of cartessn::city_mapping_canada_2025."))
     }
     if (!all(names(city_mapping_object[[i]]$coordinates) %in% c("xmin", "xmax", "ymin", "ymax"))) {
-      stop(paste0("city_mapping_object[[", i, "]]$coordinates must have names 'xmin', 'xmax', 'ymin', 'ymax'. You can copy the structure of cartessn::city_mapping_canada_2025[[", i, "]]$coordinates."))
+      stop(paste0("city_mapping_object[['", i, "']]$coordinates must have names 'xmin', 'xmax', 'ymin', 'ymax'. You can copy the structure of cartessn::city_mapping_canada_2025."))
     }
   }
   spatial_dataframe_filtered <- spatial_dataframe |> 
