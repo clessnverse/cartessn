@@ -58,9 +58,11 @@ city_mapping_canada_2025 <- list(
       "24074", # Thérèse-De Blainville
       "24076", # Vaudreuil
       "24077", # Ville-Marie—Le Sud-Ouest—Île-des-Soeurs
+      "24073", # Terrebonne
+      "24060", # Repentigny
       "24078"  # Vimy
     ),
-    "coordinates" = c("xmin" = -74.05, "xmax" = -73.45, "ymin" = 45.30, "ymax" = 45.75)
+    "coordinates" = c("xmin" = -74.05, "xmax" = -73.45, "ymin" = 45.43, "ymax" = 45.70)
   )
 )
 
