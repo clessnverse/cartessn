@@ -23,6 +23,147 @@ city_mapping_canada_2025 <- list(
       "24059"
     ),
     "coordinates" = c("xmin" = -71.6, "xmax" = -71.1, "ymin" = 46.7, "ymax" = 47)
+  ),
+  
+  "montreal" = list(
+    "ridings" = c(
+      "24003", # Ahuntsic-Cartierville
+      "24014", # Dorval—Lachine—LaSalle
+      "24028", # Hochelaga
+      "24029", # Honoré-Mercier
+      "24033", # La Pointe-de-l'Île
+      "24039", # LaSalle—Émard—Verdun
+      "24051", # Mont-Royal
+      "24054", # Notre-Dame-de-Grâce—Westmount
+      "24055", # Outremont
+      "24058", # Papineau
+      "24067", # Rosemont—La Petite-Patrie
+      "24070", # Saint-Laurent
+      "24071", # Saint-Léonard—Saint-Michel
+      "24077"  # Ville-Marie—Le Sud-Ouest—Île-des-Sœurs
+    ),
+    "coordinates" = c("xmin" = -73.99, "xmax" = -73.47, "ymin" = 45.41, "ymax" = 45.71)
+  ),
+  
+  "toronto" = list(
+    "ridings" = c(
+      "35020", # Davenport
+      "35024", # Don Valley East
+      "35025", # Don Valley North
+      "35026", # Don Valley West
+      "35028", # Eglinton—Lawrence
+      "35029", # Etobicoke Centre
+      "35030", # Etobicoke—Lakeshore
+      "35031", # Etobicoke North
+      "35103", # Scarborough—Agincourt
+      "35104", # Scarborough Centre
+      "35105", # Scarborough—Guildwood
+      "35106", # Scarborough North
+      "35107", # Scarborough—Rouge Park
+      "35108", # Scarborough Southwest
+      "35109", # Spadina—Fort York
+      "35110", # Toronto Centre
+      "35113", # Toronto—Danforth
+      "35114", # Toronto—St. Paul's
+      "35121", # University—Rosedale
+      "35124", # Willowdale
+      "35125", # York Centre
+      "35126", # York South—Weston
+      "35127"  # Humber River—Black Creek
+    ),
+    "coordinates" = c("xmin" = -79.65, "xmax" = -79.12, "ymin" = 43.58, "ymax" = 43.83)
+  ),
+  
+  "vancouver" = list(
+    "ridings" = c(
+      "59001", # Vancouver Centre
+      "59002", # Vancouver East
+      "59003", # Vancouver Granville
+      "59004", # Vancouver Kingsway
+      "59005", # Vancouver Quadra
+      "59006", # Vancouver South
+      "59033"  # Burnaby North—Seymour
+    ),
+    "coordinates" = c("xmin" = -123.27, "xmax" = -122.97, "ymin" = 49.2, "ymax" = 49.32)
+  ),
+  
+  "calgary" = list(
+    "ridings" = c(
+      "48001", # Calgary Centre
+      "48002", # Calgary Confederation
+      "48003", # Calgary Forest Lawn
+      "48004", # Calgary Heritage
+      "48005", # Calgary Midnapore
+      "48006", # Calgary Nose Hill
+      "48007", # Calgary Rocky Ridge
+      "48008", # Calgary Shepard
+      "48009", # Calgary Signal Hill
+      "48010"  # Calgary Skyview
+    ),
+    "coordinates" = c("xmin" = -114.3, "xmax" = -113.8, "ymin" = 50.85, "ymax" = 51.2)
+  ),
+  
+  "edmonton" = list(
+    "ridings" = c(
+      "48015", # Edmonton Centre
+      "48016", # Edmonton Griesbach
+      "48017", # Edmonton Manning
+      "48018", # Edmonton Mill Woods
+      "48019", # Edmonton Riverbend
+      "48020", # Edmonton Strathcona
+      "48021", # Edmonton West
+      "48022"  # Edmonton—Wetaskiwin
+    ),
+    "coordinates" = c("xmin" = -113.7, "xmax" = -113.2, "ymin" = 53.4, "ymax" = 53.7)
+  ),
+  
+  "ottawa" = list(
+    "ridings" = c(
+      "35077", # Ottawa Centre
+      "35078", # Ottawa South
+      "35079", # Ottawa—Vanier
+      "35080", # Ottawa West—Nepean
+      "35052", # Kanata—Carleton
+      "35089", # Orléans
+      "35043", # Carleton
+      "35053"  # Nepean
+    ),
+    "coordinates" = c("xmin" = -75.95, "xmax" = -75.55, "ymin" = 45.25, "ymax" = 45.5)
+  ),
+  
+  "winnipeg" = list(
+    "ridings" = c(
+      "46001", # Winnipeg Centre
+      "46002", # Winnipeg North
+      "46003", # Winnipeg South
+      "46004", # Winnipeg South Centre
+      "46006", # Saint Boniface—Saint Vital
+      "46007", # Elmwood—Transcona
+      "46008", # Kildonan—St. Paul
+      "46009"  # Charleswood—St. James—Assiniboia—Headingley
+    ),
+    "coordinates" = c("xmin" = -97.32, "xmax" = -96.95, "ymin" = 49.77, "ymax" = 50.05)
+  ),
+  
+  "halifax" = list(
+    "ridings" = c(
+      "12001", # Halifax
+      "12002", # Halifax West
+      "12003", # Dartmouth—Cole Harbour
+      "12004"  # Sackville—Preston—Chezzetcook
+    ),
+    "coordinates" = c("xmin" = -63.7, "xmax" = -63.4, "ymin" = 44.6, "ymax" = 44.75)
+  ),
+  
+  "hamilton" = list(
+    "ridings" = c(
+      "35036", # Hamilton Centre
+      "35037", # Hamilton East—Stoney Creek
+      "35038", # Hamilton Mountain
+      "35039", # Hamilton West—Ancaster—Dundas
+      "35019"  # Burlington
+    ),
+    "coordinates" = c("xmin" = -80.05, "xmax" = -79.7, "ymin" = 43.18, "ymax" = 43.33)
   )
 )
 
