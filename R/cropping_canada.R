@@ -39,8 +39,9 @@ city_mapping_canada_2025 <- list(
 #'             the names defined in the city_mapping_object
 #' @param electoral_riding_column Character string naming the column containing riding IDs.
 #'                               Default is "id_riding"
-#' @param city_mapping_object A list defining cities/regions, their ridings and coordinates.
-#'                           Default is the city_mapping object
+#' @param city_mapping_object A list defining cities/regions, their ridings and coordinates
+#'                           with the same structure as the city_mapping_canada_2025 object.
+#'                           Default is the city_mapping_canada_2025 object
 #'
 #' @return An sf object (spatial dataframe) containing only the selected city's ridings
 #'
@@ -57,7 +58,7 @@ crop_map <- function(
   spatial_dataframe,
   city,
   electoral_riding_column = "id_riding",
-  city_mapping_object = city_mapping
+  city_mapping_object = city_mapping_canada_2025
 ){
   if (!(inherits(spatial_dataframe, "sf") && inherits(spatial_dataframe, "data.frame"))) {
     stop("spatial_dataframe must have class sf and data.frame")
@@ -65,6 +66,24 @@ crop_map <- function(
   if (!(city %in% names(city_mapping_object))) {
     stop("city must be one of the following: ", 
          paste0(names(city_mapping_object), collapse = ", "))
+  }
+  if (!is.list(city_mapping_object)) {
+    stop("city_mapping_object must be a list")
+  }
+  for (i in names(city_mapping_object)) {
+    if (!is.list(city_mapping_object[[i]]) || 
+        !all(c("ridings", "coordinates") %in% names(city_mapping_object[[i]]))) {
+      stop(paste0("city_mapping_object[[", i, "]] must be a list with 'ridings' and 'coordinates' as names. You can copy the structure of cartessn::city_mapping_canada_2025[[", i, "]]."))
+    }
+    if (!is.character(city_mapping_object[[i]]$ridings)) {
+      stop(paste0("city_mapping_object[[", i, "]]$ridings must be a character vector. You can copy the structure of cartessn::city_mapping_canada_2025[[", i, "]]$ridings."))
+    }
+    if (!is.numeric(city_mapping_object[[i]]$coordinates)) {
+      stop(paste0("city_mapping_object[[", i, "]]$coordinates must be a numeric vector. You can copy the structure of cartessn::city_mapping_canada_2025[[", i, "]]$coordinates."))
+    }
+    if (!all(names(city_mapping_object[[i]]$coordinates) %in% c("xmin", "xmax", "ymin", "ymax"))) {
+      stop(paste0("city_mapping_object[[", i, "]]$coordinates must have names 'xmin', 'xmax', 'ymin', 'ymax'. You can copy the structure of cartessn::city_mapping_canada_2025[[", i, "]]$coordinates."))
+    }
   }
   spatial_dataframe_filtered <- spatial_dataframe |> 
     dplyr::filter(
