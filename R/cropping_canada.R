@@ -14,16 +14,6 @@
 #' cartessn::city_mapping_canada_2025$quebec_city$coordinates
 #'
 #' @export
-city_mapping_canada_2025 <- list(
-  "quebec_city" = quebec_city,
-  "montreal" = montreal,
-  "kitchener_waterloo" = kitchener_waterloo,
-  "london" = london,
-  "toronto" = toronto,
-  "ottawa_gatineau" = ottawa_gatineau,
-  "vancouver" = vancouver,
-  "winnipeg" = winnipeg
-)
 # Définir city_mapping_canada_2025 (que vous avez déjà)
 city_mapping_canada_2025 <- list(
   "quebec_city" = list(
