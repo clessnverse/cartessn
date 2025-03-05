@@ -8,7 +8,7 @@ crop_map(
   spatial_dataframe,
   city,
   electoral_riding_column = "id_riding",
-  city_mapping_object = city_mapping
+  city_mapping_object = city_mapping_canada_2025
 )
 }
 \arguments{
@@ -20,8 +20,9 @@ the names defined in the city_mapping_object}
 \item{electoral_riding_column}{Character string naming the column containing riding IDs.
 Default is "id_riding"}
 
-\item{city_mapping_object}{A list defining cities/regions, their ridings and coordinates.
-Default is the city_mapping object}
+\item{city_mapping_object}{A list defining cities/regions, their ridings and coordinates
+with the same structure as the city_mapping_canada_2025 object.
+Default is the city_mapping_canada_2025 object}
 }
 \value{
 An sf object (spatial dataframe) containing only the selected city's ridings
