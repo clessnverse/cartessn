@@ -63,12 +63,12 @@ crop_map <- function(
   if (!(inherits(spatial_dataframe, "sf") && inherits(spatial_dataframe, "data.frame"))) {
     stop("spatial_dataframe must have class sf and data.frame")
   }
+  if (!is.list(city_mapping_object)) {
+    stop("city_mapping_object must be a list. You can copy the structure of cartessn::city_mapping_canada_2025.")
+  }
   if (!(city %in% names(city_mapping_object))) {
     stop("city must be one of the following: ", 
          paste0(names(city_mapping_object), collapse = ", "))
-  }
-  if (!is.list(city_mapping_object)) {
-    stop("city_mapping_object must be a list")
   }
   for (i in names(city_mapping_object)) {
     if (!is.list(city_mapping_object[[i]]) || 
