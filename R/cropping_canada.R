@@ -14,7 +14,6 @@
 #' cartessn::city_mapping_canada_2025$quebec_city$coordinates
 #'
 #' @export
-# Définir city_mapping_canada_2025 (que vous avez déjà)
 city_mapping_canada_2025 <- list(
   "quebec_city" = list(
     "ridings" = c(
@@ -97,7 +96,7 @@ city_mapping_canada_2025 <- list(
   ),
   "toronto" = list(
   "ridings" = c(
-    # Circonscriptions déjà incluses
+    # Toronto area ridings
     "35105", # Taiaiako'n—Parkdale—High Park
     "35108", # Toronto Centre
     "35109", # Toronto—Danforth
@@ -137,7 +136,7 @@ city_mapping_canada_2025 <- list(
     "35098", # Scarborough—Woburn
     "35101", # Spadina—Harbourfront
     
-    # Circonscriptions supplémentaires potentielles
+    # Additional surrounding ridings
     "35001", # Ajax
     "35003", # Aurora—Oak Ridges—Richmond Hill
     "35007", # Beaches—East York
@@ -299,9 +298,9 @@ crop_map <- function(
     dplyr::filter(
       !!rlang::sym(electoral_riding_column) %in% city_mapping_object[[city]]$ridings
     )
-  ### transform into the appropriate coordinate system
+  # Transform into the appropriate coordinate system
   spatial_dataframe_filtered <- sf::st_transform(spatial_dataframe_filtered, crs = 4326)
-  # Définir la zone de découpage (crop) avec les latitudes et longitudes de la ville
+  # Define the crop area with the city's latitudes and longitudes
   crop_factor <- sf::st_bbox(
     c(xmin = unname(city_mapping_object[[city]]$coordinates["xmin"]), 
       xmax = unname(city_mapping_object[[city]]$coordinates["xmax"]), 
@@ -310,8 +309,7 @@ crop_map <- function(
     ),
     crs = sf::st_crs(spatial_dataframe_filtered)
   )
-  # Découper la carte
+  # Crop the map
   spatial_dataframe_cropped <- suppressWarnings(sf::st_crop(spatial_dataframe_filtered, crop_factor))
   return(spatial_dataframe_cropped)
 }
-
