@@ -1,17 +1,30 @@
 Package: cartessn
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Title: Outils de Cartographie Électorale Canadienne
+Version: 0.1.0
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
+    person("CLESSN", , , "clessn@ulaval.ca", role = c("aut", "cre"))
+Description: Un ensemble d'outils pour manipuler et visualiser les données 
+    cartographiques des circonscriptions électorales canadiennes. Inclut des 
+    fonctions pour extraire, recadrer et représenter visuellement les données 
+    électorales, ainsi que des ensembles de données spatiales pour les 
+    circonscriptions électorales fédérales de 2013 et 2022.
+License: MIT + file LICENSE
 Imports:
     dplyr,
+    ggplot2,
+    patchwork,
+    rlang,
     sf
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
-URL: https://github.com/clessnverse/cartessn
-BugReports: https://github.com/clessnverse/cartessn/issues
+URL: https://github.com/clessn/cartessn
+BugReports: https://github.com/clessn/cartessn/issues
 LazyData: TRUE
+Depends: 
+    R (>= 3.5.0)
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
