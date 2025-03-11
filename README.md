@@ -1,6 +1,6 @@
 # cartessn - Package pour la cartographie électorale canadienne
 
-Package R pour la cartographie électorale canadienne développé par le [CLESSN](https://clessn.ca/) (Chaire de leadership en enseignement des sciences sociales numériques).
+Package R pour la cartographie électorale canadienne développé par le [CLESSN](https://www.clessn.com/) (Chaire de leadership en enseignement des sciences sociales numériques).
 
 ## Structure du package
 
