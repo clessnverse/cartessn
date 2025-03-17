@@ -25,9 +25,7 @@ city_mapping_canada_2025 <- list(
     "24051", # Montmorency—Charlevoix
     "24058", # Portneuf—Jacques-Cartier
     "24010", # Bellechasse—Les Etchemins—Lévis
-    "24040", # Lévis—Lotbinière
-    "24046", # Mégantic—L'Érable—Lotbinière
-    "24055"  # Pierre-Boucher—Les Patriotes—Verchères
+    "24039" # Lévis—Lotbinière
   ),
     "coordinates" = c("xmin" = -71.6, "xmax" = -71.1, "ymin" = 46.7, "ymax" = 47)
   ),
