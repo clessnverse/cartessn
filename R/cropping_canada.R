@@ -17,11 +17,15 @@
 city_mapping_canada_2025 <- list(
   "quebec_city" = list(
     "ridings" = c(
-      "24016", # Charlesbourg—Haute-Saint-Charles
-      "24042", # Louis-Hébert
-      "24059", # Québec Centre
-      "24043"  # Louis-Saint-Laurent—Akiawenhrahk
-    ),
+    "24016", # Charlesbourg—Haute-Saint-Charles
+    "24042", # Louis-Hébert
+    "24059", # Québec Centre
+    "24043", # Louis-Saint-Laurent—Akiawenhrahk
+    "24008", # Beauport—Limoilou
+    "24051", # Montmorency—Charlevoix
+    "24058", # Portneuf—Jacques-Cartier
+    "24010"  # Bellechasse—Les Etchemins—Lévis
+  ),
     "coordinates" = c("xmin" = -71.6, "xmax" = -71.1, "ymin" = 46.7, "ymax" = 47)
   ),
   "montreal" = list(
