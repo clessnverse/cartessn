@@ -1,18 +1,23 @@
 # Script rapide pour afficher toutes les circonscriptions
 # (à exécuter directement dans la console)
 
-# Charger les packages
 library(sf)
 library(ggplot2)
 
-# Charger les données des circonscriptions alignées
+# Charger les circonscriptions électorales alignées
 load("data/spatial_canada_2022_electoral_ridings_aligned.rda")
+# Maintenant vous avez l'objet "spatial_canada_2022_electoral_ridings_aligned" dans votre environnement
 
-# Charger les données des provinces
-provinces_shp <- sf::st_read("data-raw/data/canada_geo_boundaries/provinces/lpr_000b21a_f.shp",
-                           quiet = TRUE)
+# Pour les provinces, utilisez l'une de ces méthodes :
 
-# Uniformiser les projections
+# OPTION 1 : Si vous avez le fichier .rda des provinces comme dans votre script original
+load("data/spatial_canada_provinces_simple.rda")
+provinces_shp <- provinces_simple  # Utiliser directement l'objet chargé
+
+# OPTION 2 : Si vous devez utiliser le shapefile, corrigez le chemin
+# provinces_shp <- sf::st_read("/chemin/correct/vers/provinces/lpr_000b21a_f.shp", quiet = TRUE)
+
+# Maintenant vous pouvez transformer
 common_crs <- st_crs(spatial_canada_2022_electoral_ridings_aligned)
 provinces_shp <- st_transform(provinces_shp, common_crs)
 
