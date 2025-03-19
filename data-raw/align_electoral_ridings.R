@@ -1,6 +1,5 @@
-# Script ultra-minimal pour aligner les circonscriptions électorales 
+# Script ultra-minimal pour aligner les circonscriptions électorales
 # avec les frontières provinciales uniquement
-
 # Packages ---------------------------------------------------------------
 library(sf)
 library(dplyr)
@@ -12,13 +11,16 @@ align_ridings_to_provinces <- function() {
   
   # 1. Charger les données
   message("Chargement des données...")
-  
   # Circonscriptions électorales
   load("data/spatial_canada_2022_electoral_ridings.rda")
   ridings_shp <- spatial_canada_2022_electoral_ridings
   
-  # Provinces
-  provinces_shp <- sf::st_read("data-raw/data/canada_geo_boundaries/provinces/lpr_000b21a_f.shp")
+  # Provinces - Correction: utiliser load() au lieu de st_read() pour le fichier .rda
+  load("data/spatial_canada_provinces_simple.rda")
+  # Assurez-vous que le nom de l'objet correspond à celui dans le fichier .rda
+  # Si l'objet s'appelle autrement que "spatial_canada_provinces_simple", 
+  # ajustez la ligne suivante en conséquence
+  provinces_shp <- provinces_simple
   
   # 2. Uniformiser les projections
   message("Uniformisation des projections...")
@@ -31,11 +33,12 @@ align_ridings_to_provinces <- function() {
   
   # 4. Fusionner toutes les provinces en une seule géométrie
   message("Préparation des frontières provinciales...")
+  # CORRECTION: Ajouter st_make_valid pour résoudre l'erreur de topologie
+  provinces_simple <- st_make_valid(provinces_simple)
   provinces_union <- st_union(provinces_simple)
   
   # 5. Découper les circonscriptions avec les provinces
   message("Découpage des circonscriptions avec les provinces...")
-  
   # Cette méthode alternative utilise un masque plutôt que des alignements complexes
   # Elle est beaucoup plus simple et robuste
   riding_fixed <- ridings_shp
@@ -47,16 +50,30 @@ align_ridings_to_provinces <- function() {
   
   for (i in 1:n_batches) {
     message("Batch ", i, "/", n_batches)
-    
     start_idx <- (i-1) * batch_size + 1
     end_idx <- min(i * batch_size, nrow(ridings_shp))
     
     # Pour chaque circonscription dans ce lot
     for (j in start_idx:end_idx) {
       tryCatch({
-        # Intersection avec les provinces (au lieu d'un alignement complexe)
-        # Cela garantit que les circonscriptions ne débordent pas des frontières
-        riding_fixed$geometry[j] <- st_intersection(ridings_shp$geometry[j], provinces_union)
+        # Effectuer l'intersection de manière à préserver les attributs
+        # Au lieu de modifier seulement la géométrie, on travaille avec la ligne complète
+        temp_riding <- ridings_shp[j,]
+        intersection_result <- st_intersection(temp_riding, provinces_union)
+        
+        # Si l'intersection produit un résultat valide
+        if (!is.null(intersection_result) && nrow(intersection_result) > 0) {
+          # Si plusieurs géométries sont créées, les fusionner
+          if (nrow(intersection_result) > 1) {
+            intersection_result <- intersection_result %>%
+              summarise(across(where(is.character), first), 
+                        across(where(is.numeric), first),
+                        across(where(is.factor), first))
+          }
+          
+          # Mettre à jour la géométrie tout en conservant les attributs originaux
+          riding_fixed$geometry[j] <- intersection_result$geometry
+        }
       }, error = function(e) {
         message("Erreur avec la circonscription ", j, ": ", e$message)
       })
@@ -66,16 +83,14 @@ align_ridings_to_provinces <- function() {
   # 6. Sauvegarder les résultats
   message("Sauvegarde des résultats...")
   spatial_canada_2022_electoral_ridings_aligned <- riding_fixed
-  
-  save(spatial_canada_2022_electoral_ridings_aligned, 
-       file = "data/spatial_canada_2022_electoral_ridings_aligned.rda", 
+  save(spatial_canada_2022_electoral_ridings_aligned,
+       file = "data/spatial_canada_2022_electoral_ridings_aligned.rda",
        compress = "bzip2")
   
   # 7. Créer une visualisation
   message("Création d'une visualisation...")
-  
   # Échantillon pour la visualisation
-  set.seed(123)  
+  set.seed(123)
   sample_idx <- sample(1:nrow(riding_fixed), 10)
   
   # Créer la carte
