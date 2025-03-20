@@ -68,3 +68,56 @@ print(map_stylized)
 
 # Sauvegarder la carte si souhaité
 ggsave("data-raw/data/toutes_circonscriptions_alignees.png", map_all, width = 12, height = 10, dpi = 300)
+
+# Script simple pour visualiser les circonscriptions électorales
+# --------------------------------------------------------------
+
+# Script pour visualiser toutes les circonscriptions individuelles
+library(sf)
+library(ggplot2)
+
+# Charger les données
+load("data/spatial_canada_2022_electoral_ridings_aligned.rda")
+
+# Créer une carte montrant uniquement les contours des circonscriptions
+ggplot() +
+  # Tracer seulement les contours des circonscriptions avec une couleur noire
+  geom_sf(data = spatial_canada_2022_electoral_ridings_aligned, 
+          fill = NA,           # Pas de remplissage
+          color = "black",     # Contours noirs
+          size = 0.2) +        # Lignes fines
+  # Titre
+  labs(title = "Circonscriptions électorales du Canada - Contours") +
+  # Thème simple
+  theme_minimal() +
+  # Enlever les éléments inutiles
+  theme(
+    panel.grid = element_blank(),
+    axis.text = element_blank(),
+    axis.title = element_blank(),
+    legend.position = "none"
+  )
+
+# Sauvegarder la carte
+ggsave("circonscriptions_contours.png", width = 12, height = 10, dpi = 300)
+
+# Variante avec couleurs différentes pour chaque circonscription
+# pour mieux distinguer les frontières entre circonscriptions adjacentes
+ggplot() +
+  geom_sf(data = spatial_canada_2022_electoral_ridings_aligned, 
+          aes(fill = id_riding),  # Couleur selon l'ID de circonscription
+          color = "black",        # Contours noirs
+          size = 0.2,             # Lignes fines
+          alpha = 0.6) +          # Semi-transparent
+  scale_fill_viridis_d() +        # Palette de couleurs
+  labs(title = "Circonscriptions électorales du Canada - Détails") +
+  theme_minimal() +
+  theme(
+    panel.grid = element_blank(),
+    axis.text = element_blank(),
+    axis.title = element_blank(),
+    legend.position = "none"      # Pas de légende (trop de circonscriptions)
+  )
+
+# Sauvegarder la deuxième carte
+ggsave("circonscriptions_details.png", width = 12, height = 10, dpi = 300)
