@@ -17,6 +17,11 @@ Le package `cartessn` est organisé comme suit :
 - `names_canada_2013_electoral_ridings`: Noms des circonscriptions électorales de 2013
 - `names_canada_2022_electoral_ridings`: Noms des circonscriptions électorales de 2022
 
+### Données de recensement
+Utilisées pour pouvoir associer les RTA aux circonscriptions électorales.
+- `census_canada_2022_electoral_ridings`: Données de recensement de 2021 pour chaque circonscription électorale de 2022
+- `census_canada_2021_rta`: Données de recensement de 2021 pour chaque RTA.
+
 ### Fonctions de cartographie
 - `crop_map()`: Extrait et recadre une carte pour une région/ville spécifique
 - `create_map()`: Crée une carte thématique personnalisable à partir des données électorales
@@ -29,7 +34,7 @@ Le package `cartessn` est organisé comme suit :
 
 ```r
 # Installer depuis GitHub
-devtools::install_github("clessn/cartessn")
+devtools::install_github("clessnverse/cartessn")
 ```
 
 ## Exemples d'utilisation
