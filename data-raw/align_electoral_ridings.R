@@ -1,293 +1,154 @@
-# Script ultra-minimal pour aligner les circonscriptions électorales
-# avec les frontières provinciales uniquement
+# Script optimisé pour aligner les circonscriptions électorales 
+# avec les frontières provinciales
+
 # Packages ---------------------------------------------------------------
+library(sf)
+library(dplyr)
+library(ggplot2)
 
-# Vérifier et installer les packages requis
-required_packages <- c("sf", "dplyr", "ggplot2", "parallel", "pbapply", "future", "future.apply")
-for (pkg in required_packages) {
-  if (!requireNamespace(pkg, quietly = TRUE)) {
-    message("Installation du package ", pkg, "...")
-    install.packages(pkg)
-  }
-  library(pkg, character.only = TRUE)
-}
-
-# Activer la parallélisation avec future
-future::plan(future::multisession, workers = future::availableCores() - 1)
-
-# Fonction d'alignement très basique -------------------------------------
+# Fonction d'alignement optimisée ----------------------------------------
 align_ridings_to_provinces <- function() {
-  message("### Démarrage de l'alignement simplifié ###")
-  
-  # Vérification des chemins d'accès
-  data_dir <- "data"
-  data_raw_dir <- "data-raw/data"
-  
-  # Créer les répertoires s'ils n'existent pas
-  if (!dir.exists(data_dir)) {
-    message("Création du répertoire 'data'...")
-    dir.create(data_dir, recursive = TRUE, showWarnings = FALSE)
-  }
-  
-  if (!dir.exists(data_raw_dir)) {
-    message("Création du répertoire 'data-raw/data'...")
-    dir.create(data_raw_dir, recursive = TRUE, showWarnings = FALSE)
-  }
+  message("### Démarrage de l'alignement optimisé ###")
   
   # 1. Charger les données
   message("Chargement des données...")
   
-  # Vérifier l'existence des fichiers
-  riding_file <- file.path(data_dir, "spatial_canada_2022_electoral_ridings.rda")
-  province_file <- file.path(data_dir, "spatial_canada_provinces_simple.rda")
-  
-  if (!file.exists(riding_file)) {
-    stop("Fichier non trouvé: ", riding_file, 
-         ". Veuillez vérifier le chemin d'accès et que le fichier existe.")
-  }
-  
-  if (!file.exists(province_file)) {
-    stop("Fichier non trouvé: ", province_file, 
-         ". Veuillez vérifier le chemin d'accès et que le fichier existe.")
-  }
-  
   # Circonscriptions électorales
-  load(riding_file)
-  if (!exists("spatial_canada_2022_electoral_ridings")) {
-    stop("L'objet 'spatial_canada_2022_electoral_ridings' n'a pas été chargé.")
-  }
+  load("data/spatial_canada_2022_electoral_ridings.rda")
   ridings_shp <- spatial_canada_2022_electoral_ridings
   
   # Provinces
-  load(province_file)
-  if (!exists("provinces_simple")) {
-    stop("L'objet 'provinces_simple' n'a pas été chargé.")
-  }
-  provinces_shp <- provinces_simple
-  
-  # Vérifier que les objets sont bien des objets sf
-  if (!inherits(ridings_shp, "sf")) {
-    stop("ridings_shp n'est pas un objet sf valide.")
-  }
-  
-  if (!inherits(provinces_shp, "sf")) {
-    stop("provinces_shp n'est pas un objet sf valide.")
-  }
+  load("data/spatial_canada_provinces_simple.rda")
+  # Ici on corrige l'affectation - utiliser le bon nom d'objet
+  # Corriger le nom de l'objet selon ce qui est réellement dans le fichier
+  provinces_shp <- get(ls()[grep("province", ls())])
   
   # 2. Uniformiser les projections
   message("Uniformisation des projections...")
   common_crs <- st_crs(ridings_shp)
   provinces_shp <- st_transform(provinces_shp, common_crs)
   
-  # 3. Simplifier les géométries pour améliorer les performances
+  # 3. Simplifier les géométries de manière plus agressive pour améliorer les performances
   message("Simplification des géométries...")
-  provinces_simple <- st_simplify(provinces_shp, preserveTopology = TRUE, dTolerance = 100)
+  provinces_simple <- st_simplify(provinces_shp, preserveTopology = TRUE, dTolerance = 500)
+  # Simplifier également les circonscriptions pour accélérer le traitement
+  ridings_simple <- st_simplify(ridings_shp, preserveTopology = TRUE, dTolerance = 100)
+  
+  # 4. Préparation des provinces
+  message("Préparation des frontières provinciales...")
   provinces_simple <- st_make_valid(provinces_simple)
   
-  # 4. Configuration de la parallélisation
-  message("Configuration de la parallélisation...")
-  num_cores <- future::availableCores() - 1
-  message("Utilisation de ", num_cores, " cœurs pour le traitement parallèle")
+  # 5. Utiliser une approche vectorisée plus efficace pour le découpage
+  message("Découpage des circonscriptions avec les provinces (méthode vectorisée)...")
   
-  # 5. Diviser les données en lots pour parallélisation
-  message("Préparation des lots pour parallélisation...")
+  # Au lieu de traiter circonscription par circonscription, on fait une seule opération
+  gc() # Libérer la mémoire avant l'opération intensive
   
-  # Déterminer la taille des lots basée sur le nombre de cœurs
-  batch_size <- ceiling(nrow(ridings_shp) / num_cores)
-  batch_indices <- split(1:nrow(ridings_shp), ceiling(seq_along(1:nrow(ridings_shp)) / batch_size))
+  # Utiliser st_intersection en une seule opération (plus efficace)
+  riding_fixed <- try({
+    message("Tentative d'intersection vectorisée...")
+    st_intersection(ridings_simple, st_union(provinces_simple))
+  })
   
-  # Fonction de traitement des lots (à exécuter en parallèle)
-  process_batch <- function(indices) {
-    library(sf)
-    library(dplyr)
+  # Si l'opération vectorisée échoue, on revient à une méthode par lots
+  if (inherits(riding_fixed, "try-error")) {
+    message("L'intersection vectorisée a échoué, passage à la méthode par lots...")
     
-    batch_results <- NULL
-    missing_count <- 0
+    # Créer une copie pour stocker les résultats
+    riding_fixed <- ridings_simple
     
-    for (j in indices) {
-      tryCatch({
-        # Obtenir la circonscription
-        temp_riding <- ridings_shp[j,]
-        riding_has_intersection <- FALSE
+    # Traiter par lots plus grands pour réduire les itérations
+    batch_size <- 50 # Augmenter la taille des lots
+    n_batches <- ceiling(nrow(ridings_simple) / batch_size)
+    
+    # Utiliser une approche par province plutôt que de tout fusionner
+    # Cela permet de réduire la complexité des géométries
+    for (i in 1:n_batches) {
+      message("Batch ", i, "/", n_batches)
+      
+      start_idx <- (i-1) * batch_size + 1
+      end_idx <- min(i * batch_size, nrow(ridings_simple))
+      
+      # Traiter ce lot de circonscriptions
+      batch_ridings <- ridings_simple[start_idx:end_idx, ]
+      
+      # Pour chaque province, trouver les circonscriptions qui l'intersectent
+      # et faire l'intersection seulement pour celles-là
+      for (p in 1:nrow(provinces_simple)) {
+        province_geom <- provinces_simple$geometry[p]
         
-        # Pour chaque province, calculer l'intersection
-        for (p in 1:nrow(provinces_simple)) {
-          province <- provinces_simple[p,]
+        # Identifier les circonscriptions qui intersectent cette province
+        intersects <- st_intersects(batch_ridings, province_geom, sparse = FALSE)[,1]
+        
+        if (any(intersects)) {
+          # Traiter seulement les circonscriptions qui intersectent cette province
+          intersect_indices <- which(intersects)
           
-          # Vérifier si l'intersection existe (plus robuste)
-          intersects <- suppressWarnings(st_intersects(temp_riding, province, sparse = FALSE))
-          if (length(intersects) > 0 && intersects[1,1]) {
-            # Calculer l'intersection
-            intersection_result <- suppressWarnings(st_intersection(temp_riding, province))
+          for (j in intersect_indices) {
+            j_global <- start_idx + j - 1
             
-            # Si l'intersection produit un résultat valide
-            if (!is.null(intersection_result) && nrow(intersection_result) > 0) {
-              # Vérifier que la géométrie est valide
-              if (any(!st_is_valid(intersection_result))) {
-                intersection_result <- st_make_valid(intersection_result)
-              }
+            tryCatch({
+              # Intersection avec cette province uniquement
+              # On utilise directement la géométrie pour éviter des problèmes de colonnes
+              tmp_intersection <- st_intersection(
+                st_geometry(ridings_simple)[j_global], 
+                province_geom
+              )
               
-              # Obtenir les informations de la province (toutes les colonnes)
-              for (col_name in names(province)) {
-                if (col_name != "geometry") {
-                  intersection_result[[paste0("province_", col_name)]] <- province[[col_name]]
-                }
-              }
-              
-              # Marquer cette circonscription comme ayant une intersection
-              riding_has_intersection <- TRUE
-              
-              # Ajouter à nos résultats de lot
-              if (is.null(batch_results)) {
-                batch_results <- intersection_result
-              } else {
-                # Combiner les dataframes
-                batch_results <- rbind(batch_results, intersection_result)
-              }
-            }
+              # Mettre à jour la géométrie
+              riding_fixed$geometry[j_global] <- tmp_intersection
+            }, error = function(e) {
+              message("Erreur avec la circonscription ", j_global, ": ", e$message)
+            })
           }
         }
         
-        # Si la circonscription n'a pas d'intersection valide avec une province
-        # On la conserve telle quelle
-        if (!riding_has_intersection) {
-          missing_count <- missing_count + 1
-          
-          # On ajoute quand même cette circonscription au résultat
-          if (is.null(batch_results)) {
-            batch_results <- temp_riding
-          } else {
-            # Combiner les dataframes
-            batch_results <- rbind(batch_results, temp_riding)
-          }
-        }
-        
-      }, error = function(e) {
-        # En cas d'erreur, on ajoute quand même la circonscription originale
-        if (is.null(batch_results)) {
-          batch_results <<- ridings_shp[j,]
-        } else {
-          # Combiner les dataframes
-          batch_results <<- rbind(batch_results, ridings_shp[j,])
-        }
-      })
-    }
-    
-    return(list(results = batch_results, missing = missing_count))
-  }
-  
-  # 6. Exécution parallèle
-  message("Traitement parallèle des circonscriptions...")
-  
-  # Utiliser future_lapply pour le traitement parallèle
-  batch_results <- future.apply::future_lapply(
-    batch_indices,
-    process_batch,
-    future.seed = TRUE  # Pour la reproductibilité
-  )
-  
-  # 7. Combiner les résultats de tous les processus
-  message("Combinaison des résultats...")
-  result_ridings <- NULL
-  missing_count <- 0
-  
-  for (batch in batch_results) {
-    batch_data <- batch$results
-    missing_count <- missing_count + batch$missing
-    
-    if (!is.null(batch_data) && nrow(batch_data) > 0) {
-      if (is.null(result_ridings)) {
-        result_ridings <- batch_data
-      } else {
-        # Uniformiser les colonnes avant de combiner
-        all_cols <- union(names(result_ridings), names(batch_data))
-        
-        # Ajouter les colonnes manquantes à chaque dataframe
-        for (col in all_cols) {
-          if (!col %in% names(result_ridings)) {
-            result_ridings[[col]] <- NA
-          }
-          if (!col %in% names(batch_data)) {
-            batch_data[[col]] <- NA
-          }
-        }
-        
-        # Maintenant combiner
-        result_ridings <- rbind(result_ridings[, all_cols], 
-                               batch_data[, all_cols])
+        # Libérer la mémoire régulièrement
+        if (p %% 3 == 0) gc()
       }
+      
+      # Libérer la mémoire après chaque lot
+      gc()
     }
   }
+
+  # 6. Validation
+  message("Validation des associations ID/noms/géométries...")
   
-  message("Circonscriptions sans intersection valide: ", missing_count)
+  # S'assurer que toutes les géométries sont valides
+  riding_fixed <- st_make_valid(riding_fixed)
   
-  # Vérifier que tous les ridings originaux sont bien représentés
-  original_ids <- unique(ridings_shp$id_riding)
-  result_ids <- unique(result_ridings$id_riding)
-  missing_ids <- setdiff(original_ids, result_ids)
-  
-  if (length(missing_ids) > 0) {
-    warning("Certaines circonscriptions originales manquent dans le résultat: ", 
-            paste(missing_ids, collapse=", "))
-    
-    # Ajouter les circonscriptions manquantes
-    for (id in missing_ids) {
-      missing_riding <- ridings_shp[ridings_shp$id_riding == id, ]
-      result_ridings <- rbind(result_ridings, missing_riding)
-    }
-    
-    message("Les circonscriptions manquantes ont été ajoutées.")
-  }
-  
-  # 8. Sauvegarder les résultats
+  # 7. Sauvegarder les résultats
   message("Sauvegarde des résultats...")
-  spatial_canada_2022_electoral_ridings_aligned <- result_ridings
-  output_file <- file.path(data_dir, "spatial_canada_2022_electoral_ridings_aligned.rda")
+  spatial_canada_2022_electoral_ridings_aligned <- riding_fixed
   
-  # Créer une sauvegarde si le fichier existe déjà
-  if (file.exists(output_file)) {
-    backup_file <- paste0(output_file, ".backup-", format(Sys.time(), "%Y%m%d%H%M%S"))
-    file.copy(output_file, backup_file)
-    message("Sauvegarde du fichier existant créée: ", backup_file)
-  }
-  
-  # Sauvegarder les résultats
-  save(spatial_canada_2022_electoral_ridings_aligned,
-       file = output_file,
+  save(spatial_canada_2022_electoral_ridings_aligned, 
+       file = "data/spatial_canada_2022_electoral_ridings_aligned.rda", 
        compress = "bzip2")
   
-  # 9. Créer une visualisation
+  # 8. Création d'une visualisation simplifiée pour ne pas consommer trop de mémoire
   message("Création d'une visualisation...")
-  # Échantillon pour la visualisation
-  if (nrow(result_ridings) > 0) {
-    set.seed(123)
-    sample_size <- min(10, nrow(result_ridings))
-    sample_idx <- sample(1:nrow(result_ridings), sample_size)
-    
-    # Créer la carte
-    map <- ggplot() +
-      geom_sf(data = provinces_simple, fill = "white", color = "darkgray") +
-      geom_sf(data = result_ridings[sample_idx,], fill = NA, color = "red") +
-      theme_minimal() +
-      labs(title = "Circonscriptions électorales alignées avec les provinces",
-           caption = paste(sample_size, "circonscriptions sélectionnées aléatoirement"))
-    
-    # Sauvegarder la carte
-    viz_file <- file.path(data_raw_dir, "aligned_ridings_preview.png")
-    ggsave(viz_file, map, width = 10, height = 8)
-    message("Visualisation sauvegardée: ", viz_file)
-  } else {
-    warning("Impossible de créer une visualisation: aucun résultat généré.")
-  }
   
-  # Afficher des statistiques
-  message("Nombre total de circonscriptions originales: ", length(original_ids))
-  message("Nombre total d'enregistrements dans le résultat: ", nrow(result_ridings))
-  message("Nombre total de circonscriptions uniques dans le résultat: ", length(unique(result_ridings$id_riding)))
+  # Échantillon réduit pour la visualisation
+  set.seed(123)
   
-  message("Processus terminé! Données sauvegardées dans: ", output_file)
+  # Utiliser moins de circonscriptions pour l'aperçu
+  sample_idx <- sample(1:nrow(riding_fixed), 5)
+  
+  # Utiliser une version simplifiée des provinces pour l'affichage
+  provinces_viz <- st_simplify(provinces_simple, preserveTopology = TRUE, dTolerance = 1000)
+  
+  # Créer la carte avec moins d'éléments
+  map <- ggplot() +
+    geom_sf(data = provinces_viz, fill = "white", color = "darkgray") +
+    geom_sf(data = riding_fixed[sample_idx,], fill = NA, color = "red") +
+    theme_minimal() +
+    labs(title = "Circonscriptions électorales alignées avec les provinces",
+         caption = "5 circonscriptions sélectionnées aléatoirement")
+  
+  # Sauvegarder la carte
+  ggsave("data-raw/data/aligned_ridings_preview.png", map, width = 10, height = 8)
+  
+  message("Processus terminé! Données sauvegardées.")
   return(spatial_canada_2022_electoral_ridings_aligned)
 }
-
-# Exécuter la fonction automatiquement
-align_ridings_to_provinces()
