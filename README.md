@@ -29,6 +29,7 @@ Utilisées pour pouvoir associer les RTA aux circonscriptions électorales.
 
 ### Fonctions d'analyse spatiale
 - `intersect_spatial_objects()`: Calcule l'intersection entre deux objets spatiaux et les proportions de couverture
+- `map_fsa_to_ridings()`: Associe les régions de tri d'acheminement (RTA) aux circonscriptions électorales
 
 ## Installation
 
@@ -90,12 +91,52 @@ create_multi_panel_map(
 )
 ```
 
+### Associer des codes postaux aux circonscriptions électorales
+
+```r
+# Charger les données spatiales
+sf_rta <- cartessn::spatial_canada_2021_rta
+sf_ridings <- cartessn::spatial_canada_2022_electoral_ridings_aligned
+
+# Créer le mapping entre les RTA et les circonscriptions
+mapping <- map_fsa_to_ridings(sf_rta, sf_ridings)
+
+# Examiner le mapping
+head(mapping$fsa_to_riding_mapping)
+
+# Associer des données de sondage (exemple)
+survey_data$rta <- substr(survey_data$postal_code, 1, 3)
+survey_data <- survey_data %>%
+  left_join(mapping$fsa_to_riding_mapping, by = "rta")
+
+# Vérifier le taux d'association
+match_rate <- sum(!is.na(survey_data$id_riding)) / nrow(survey_data) * 100
+print(paste0("Taux d'association: ", round(match_rate, 2), "%"))
+
+# Agréger les données par circonscription pour visualisation
+riding_data <- survey_data %>%
+  group_by(id_riding) %>%
+  summarize(
+    count = n(),
+    avg_value = mean(value, na.rm = TRUE)
+  )
+
+# Créer une carte avec les données agrégées
+riding_map <- sf_ridings %>%
+  left_join(riding_data, by = "id_riding")
+
+create_map(riding_map,
+           value_column = "avg_value",
+           title = "Données de sondage par circonscription",
+           legend_title = "Valeur moyenne")
+```
+
 ## Organisation du code
 
 ### Dossier `R/`
 Contient les fonctions exportées du package :
 - `cropping_canada.R` : Définition des régions et fonction `crop_map()`
-- `utils.R` : Utilitaires comme `intersect_spatial_objects()`
+- `utils.R` : Utilitaires comme `intersect_spatial_objects()` et `map_fsa_to_ridings()`
 - `map_visualization.R` : Fonctions de visualisation comme `create_map()` et `create_multi_panel_map()`
 - Autres fichiers pour l'accès aux données spatiales et nominatives
 
