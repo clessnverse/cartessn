@@ -7,7 +7,7 @@
 #' @param id_ref A string specifying the column name in `spatial_ref` that contains unique identifiers.  
 #' @param spatial_target An `sf` object representing the target spatial units used to intersect `spatial_ref`.  
 #' @param id_target A string specifying the column name in `spatial_target` that contains unique identifiers.  
-#' @param dTolerance A numeric value specisi j'utfying the simplification tolerance for spatial geometries before computing intersections. Default is `50`.  
+#' @param dTolerance A numeric value specifying the simplification tolerance for spatial geometries before computing intersections. Default is `50`.  
 #'  
 #' @return A tibble containing the intersections with the following columns:  
 #' - `{id_ref}`: The unique identifier of the reference spatial unit.  
@@ -16,6 +16,7 @@
 #' - `prop_of_ref_area_covered_by_target`: The proportion of the reference unit covered by the target unit.  
 #'  
 #' @import dplyr sf
+#' @importFrom rlang sym
 #' 
 #' @details  
 #' - The function simplifies the geometries before computing intersections to improve performance.  
@@ -32,10 +33,10 @@
 #' @export 
 intersect_spatial_objects <- function(spatial_ref, id_ref, spatial_target, id_target, dTolerance = 50) {
   message("🔹 Simplifying spatial objects...")
-  spatial_ref_simplified <- sf::st_simplify(spatial_ref, dTolerance = dTolerance) |> 
-    dplyr::select(!!sym(id_ref), geometry)
-  spatial_target_simplified <- sf::st_simplify(spatial_target, dTolerance = dTolerance) |> 
-    dplyr::select(!!sym(id_target), geometry)
+  spatial_ref_simplified <- sf::st_simplify(spatial_ref, dTolerance = dTolerance) %>% 
+    dplyr::select(!!rlang::sym(id_ref), geometry)
+  spatial_target_simplified <- sf::st_simplify(spatial_target, dTolerance = dTolerance) %>% 
+    dplyr::select(!!rlang::sym(id_target), geometry)
   
   message("🔹 Computing intersections and transforming to tibble...")
   tibble_intersections <- dplyr::as_tibble(sf::st_intersection(spatial_ref_simplified, spatial_target_simplified))
@@ -49,20 +50,20 @@ intersect_spatial_objects <- function(spatial_ref, id_ref, spatial_target, id_ta
   tibble_intersections$area <- sf::st_area(tibble_intersections$geometry)
   tibble_intersections$area_numeric <- as.numeric(tibble_intersections$area)
   
-  empty_intersections <- nrow(tibble_intersections |> dplyr::filter(area_numeric == 0))
+  empty_intersections <- nrow(tibble_intersections %>% dplyr::filter(area_numeric == 0))
   message("   🔸 Empty intersections (adjust dTolerance if too high): ", empty_intersections)
   
-  df_by_ref <- tibble_intersections |> 
-    dplyr::filter(area_numeric > 0) |> 
-    dplyr::group_by(!!sym(id_ref)) |> 
+  df_by_ref <- tibble_intersections %>% 
+    dplyr::filter(area_numeric > 0) %>% 
+    dplyr::group_by(!!rlang::sym(id_ref)) %>% 
     dplyr::mutate(
       total_covered_area = sum(area_numeric),
       prop_of_ref_area_covered_by_target = area_numeric / total_covered_area
-    ) |> 
+    ) %>% 
     dplyr::rename(
       area_covered_by_target_m2 = area_numeric
-    ) |> 
-    dplyr::select(-total_covered_area, -area) |> 
+    ) %>% 
+    dplyr::select(-total_covered_area, -area) %>% 
     dplyr::ungroup()
   
   # Vérification que toutes les unités de ref sont présentes dans le résultat
@@ -110,6 +111,7 @@ intersect_spatial_objects <- function(spatial_ref, id_ref, spatial_target, id_ta
 #' - The return value includes both detailed intersections and a simplified mapping
 #'
 #' @import dplyr sf
+#' @importFrom rlang sym
 #'
 #' @examples
 #' \dontrun{
@@ -203,7 +205,7 @@ map_fsa_to_ridings <- function(sf_rta, sf_ridings, min_intersection_pct = 10,
       
       # Join total areas and calculate proportions
       intersections_df <- intersection_sf %>%
-        sf::st_join(sf_rta_with_area %>% dplyr::select(rta, total_area_rta), by = "rta") %>%
+        sf::st_join(sf_rta_with_area %>% dplyr::select(rta, total_area_rta)) %>%
         sf::st_drop_geometry() %>%
         dplyr::mutate(
           prop_of_ref_area_covered_by_target = as.numeric(area_intersection / total_area_rta),
@@ -242,7 +244,7 @@ map_fsa_to_ridings <- function(sf_rta, sf_ridings, min_intersection_pct = 10,
     
     # Join and calculate proportions
     intersections_df <- intersection_sf %>%
-      sf::st_join(sf_rta_with_area %>% dplyr::select(rta, total_area_rta), by = "rta") %>%
+      sf::st_join(sf_rta_with_area %>% dplyr::select(rta, total_area_rta)) %>%
       sf::st_drop_geometry() %>%
       dplyr::mutate(
         prop_of_ref_area_covered_by_target = as.numeric(area_intersection / total_area_rta),
