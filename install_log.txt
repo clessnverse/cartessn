@@ -1,0 +1,377 @@
+
+R version 4.2.2 Patched (2022-11-10 r83330) -- "Innocent and Trusting"
+Copyright (C) 2022 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> # Set a custom library path
+> lib_path <- "~/R/library"
+> dir.create(lib_path, showWarnings = FALSE, recursive = TRUE)
+> 
+> # Attempt to install dependencies first
+> install.packages(c("devtools", "remotes", "sf", "dplyr", "ggplot2", "patchwork", "rlang"), 
++                  repos = "https://cloud.r-project.org",
++                  lib = lib_path)
+trying URL 'https://cloud.r-project.org/src/contrib/devtools_2.4.5.tar.gz'
+Content type 'application/x-gzip' length 374718 bytes (365 KB)
+==================================================
+downloaded 365 KB
+
+trying URL 'https://cloud.r-project.org/src/contrib/remotes_2.5.0.tar.gz'
+Content type 'application/x-gzip' length 164496 bytes (160 KB)
+==================================================
+downloaded 160 KB
+
+trying URL 'https://cloud.r-project.org/src/contrib/sf_1.0-19.tar.gz'
+Content type 'application/x-gzip' length 3808024 bytes (3.6 MB)
+==================================================
+downloaded 3.6 MB
+
+trying URL 'https://cloud.r-project.org/src/contrib/dplyr_1.1.4.tar.gz'
+Content type 'application/x-gzip' length 1207521 bytes (1.2 MB)
+==================================================
+downloaded 1.2 MB
+
+trying URL 'https://cloud.r-project.org/src/contrib/ggplot2_3.5.1.tar.gz'
+Content type 'application/x-gzip' length 3604371 bytes (3.4 MB)
+==================================================
+downloaded 3.4 MB
+
+trying URL 'https://cloud.r-project.org/src/contrib/patchwork_1.3.0.tar.gz'
+Content type 'application/x-gzip' length 3324074 bytes (3.2 MB)
+==================================================
+downloaded 3.2 MB
+
+trying URL 'https://cloud.r-project.org/src/contrib/rlang_1.1.5.tar.gz'
+Content type 'application/x-gzip' length 766219 bytes (748 KB)
+==================================================
+downloaded 748 KB
+
+* installing *source* package ‘remotes’ ...
+** package ‘remotes’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (remotes)
+* installing *source* package ‘sf’ ...
+** package ‘sf’ successfully unpacked and MD5 sums checked
+** using staged installation
+configure: CC: gcc
+configure: CXX: g++ -std=gnu++14
+checking for gdal-config... /usr/bin/gdal-config
+checking gdal-config usability... yes
+configure: GDAL: 3.6.2
+checking GDAL version >= 2.0.1... yes
+checking for gcc... gcc
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... 
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether the compiler supports GNU C... yes
+checking whether gcc accepts -g... yes
+checking for gcc option to enable C11 features... none needed
+checking for stdio.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for strings.h... yes
+checking for sys/stat.h... yes
+checking for sys/types.h... yes
+checking for unistd.h... yes
+checking for gdal.h... yes
+checking GDAL: linking with --libs only... yes
+checking GDAL: /usr/share/gdal/pcs.csv readable... no
+checking GDAL: checking whether PROJ is available for linking:... yes
+checking GDAL: checking whether PROJ is available for running:... yes
+configure: GDAL: 3.6.2
+configure: pkg-config proj exists, will use it
+configure: using proj.h.
+configure: PROJ: 9.1.1
+checking PROJ: checking whether PROJ and sqlite3 are available for linking:... yes
+checking for geos-config... /usr/bin/geos-config
+checking geos-config usability... yes
+configure: GEOS: 3.11.1
+checking GEOS version >= 3.4.0... yes
+checking for geos_c.h... yes
+checking geos: linking with -L/usr/lib/x86_64-linux-gnu -lgeos_c... yes
+configure: Package CPP flags:  -I/usr/include/x86_64-linux-gnu  -DHAVE_PROJ_H -I/usr/include/gdal -I/usr/include
+configure: Package LIBS: -lproj    -L/usr/lib/x86_64-linux-gnu -lgdal -L/usr/lib/x86_64-linux-gnu -lgeos_c
+configure: creating ./config.status
+config.status: creating src/Makevars
+** libs
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DHAVE_PROJ_H -I/usr/include/gdal -I/usr/include -I'/home/etienne_prx/R/x86_64-pc-linux-gnu-library/4.2/Rcpp/include'    -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c RcppExports.cpp -o RcppExports.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DHAVE_PROJ_H -I/usr/include/gdal -I/usr/include -I'/home/etienne_prx/R/x86_64-pc-linux-gnu-library/4.2/Rcpp/include'    -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c bbox.cpp -o bbox.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DHAVE_PROJ_H -I/usr/include/gdal -I/usr/include -I'/home/etienne_prx/R/x86_64-pc-linux-gnu-library/4.2/Rcpp/include'    -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c gdal.cpp -o gdal.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DHAVE_PROJ_H -I/usr/include/gdal -I/usr/include -I'/home/etienne_prx/R/x86_64-pc-linux-gnu-library/4.2/Rcpp/include'    -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c gdal_geom.cpp -o gdal_geom.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DHAVE_PROJ_H -I/usr/include/gdal -I/usr/include -I'/home/etienne_prx/R/x86_64-pc-linux-gnu-library/4.2/Rcpp/include'    -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c gdal_read.cpp -o gdal_read.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DHAVE_PROJ_H -I/usr/include/gdal -I/usr/include -I'/home/etienne_prx/R/x86_64-pc-linux-gnu-library/4.2/Rcpp/include'    -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c gdal_read_stream.cpp -o gdal_read_stream.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DHAVE_PROJ_H -I/usr/include/gdal -I/usr/include -I'/home/etienne_prx/R/x86_64-pc-linux-gnu-library/4.2/Rcpp/include'    -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c gdal_utils.cpp -o gdal_utils.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DHAVE_PROJ_H -I/usr/include/gdal -I/usr/include -I'/home/etienne_prx/R/x86_64-pc-linux-gnu-library/4.2/Rcpp/include'    -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c gdal_write.cpp -o gdal_write.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DHAVE_PROJ_H -I/usr/include/gdal -I/usr/include -I'/home/etienne_prx/R/x86_64-pc-linux-gnu-library/4.2/Rcpp/include'    -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c geos.cpp -o geos.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DHAVE_PROJ_H -I/usr/include/gdal -I/usr/include -I'/home/etienne_prx/R/x86_64-pc-linux-gnu-library/4.2/Rcpp/include'    -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c hex.cpp -o hex.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DHAVE_PROJ_H -I/usr/include/gdal -I/usr/include -I'/home/etienne_prx/R/x86_64-pc-linux-gnu-library/4.2/Rcpp/include'    -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c mdim.cpp -o mdim.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DHAVE_PROJ_H -I/usr/include/gdal -I/usr/include -I'/home/etienne_prx/R/x86_64-pc-linux-gnu-library/4.2/Rcpp/include'    -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c ops.cpp -o ops.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DHAVE_PROJ_H -I/usr/include/gdal -I/usr/include -I'/home/etienne_prx/R/x86_64-pc-linux-gnu-library/4.2/Rcpp/include'    -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c polygonize.cpp -o polygonize.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DHAVE_PROJ_H -I/usr/include/gdal -I/usr/include -I'/home/etienne_prx/R/x86_64-pc-linux-gnu-library/4.2/Rcpp/include'    -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c proj.cpp -o proj.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DHAVE_PROJ_H -I/usr/include/gdal -I/usr/include -I'/home/etienne_prx/R/x86_64-pc-linux-gnu-library/4.2/Rcpp/include'    -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c proj_info.cpp -o proj_info.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DHAVE_PROJ_H -I/usr/include/gdal -I/usr/include -I'/home/etienne_prx/R/x86_64-pc-linux-gnu-library/4.2/Rcpp/include'    -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c raster2sf.cpp -o raster2sf.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DHAVE_PROJ_H -I/usr/include/gdal -I/usr/include -I'/home/etienne_prx/R/x86_64-pc-linux-gnu-library/4.2/Rcpp/include'    -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c sfc-sfg.cpp -o sfc-sfg.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DHAVE_PROJ_H -I/usr/include/gdal -I/usr/include -I'/home/etienne_prx/R/x86_64-pc-linux-gnu-library/4.2/Rcpp/include'    -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c signed_area.cpp -o signed_area.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DHAVE_PROJ_H -I/usr/include/gdal -I/usr/include -I'/home/etienne_prx/R/x86_64-pc-linux-gnu-library/4.2/Rcpp/include'    -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c stars.cpp -o stars.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DHAVE_PROJ_H -I/usr/include/gdal -I/usr/include -I'/home/etienne_prx/R/x86_64-pc-linux-gnu-library/4.2/Rcpp/include'    -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c wkb.cpp -o wkb.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG -I/usr/include/x86_64-linux-gnu  -DHAVE_PROJ_H -I/usr/include/gdal -I/usr/include -I'/home/etienne_prx/R/x86_64-pc-linux-gnu-library/4.2/Rcpp/include'    -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c zm_range.cpp -o zm_range.o
+g++ -std=gnu++14 -shared -L/usr/lib/R/lib -Wl,-z,relro -o sf.so RcppExports.o bbox.o gdal.o gdal_geom.o gdal_read.o gdal_read_stream.o gdal_utils.o gdal_write.o geos.o hex.o mdim.o ops.o polygonize.o proj.o proj_info.o raster2sf.o sfc-sfg.o signed_area.o stars.o wkb.o zm_range.o -lproj -L/usr/lib/x86_64-linux-gnu -lgdal -L/usr/lib/x86_64-linux-gnu -lgeos_c -L/usr/lib/R/lib -lR
+installing to /home/etienne_prx/R/library/00LOCK-sf/00new/sf/libs
+** R
+** demo
+** inst
+** byte-compile and prepare package for lazy loading
+in method for ‘dbWriteTable’ with signature ‘"PostgreSQLConnection","character","sf"’: no definition for class “PostgreSQLConnection”
+in method for ‘dbDataType’ with signature ‘"PostgreSQLConnection","sf"’: no definition for class “PostgreSQLConnection”
+in method for ‘coerce’ with signature ‘"Spatial","sf"’: no definition for class “Spatial”
+in method for ‘coerce’ with signature ‘"Spatial","sfc"’: no definition for class “Spatial”
+in method for ‘coerce’ with signature ‘"sf","Spatial"’: no definition for class “Spatial”
+in method for ‘coerce’ with signature ‘"sfc","Spatial"’: no definition for class “Spatial”
+in method for ‘coerce’ with signature ‘"XY","Spatial"’: no definition for class “Spatial”
+in method for ‘coerce’ with signature ‘"crs","CRS"’: no definition for class “CRS”
+in method for ‘coerce’ with signature ‘"sgbp","sparseMatrix"’: no definition for class “sparseMatrix”
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (sf)
+* installing *source* package ‘rlang’ ...
+** package ‘rlang’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+gcc -I"/usr/share/R/include" -DNDEBUG -I./rlang/    -fvisibility=hidden -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c capture.c -o capture.o
+gcc -I"/usr/share/R/include" -DNDEBUG -I./rlang/    -fvisibility=hidden -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c internal.c -o internal.o
+gcc -I"/usr/share/R/include" -DNDEBUG -I./rlang/    -fvisibility=hidden -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c rlang.c -o rlang.o
+gcc -I"/usr/share/R/include" -DNDEBUG -I./rlang/    -fvisibility=hidden -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c version.c -o version.o
+gcc -shared -L/usr/lib/R/lib -Wl,-z,relro -o rlang.so capture.o internal.o rlang.o version.o -L/usr/lib/R/lib -lR
+installing to /home/etienne_prx/R/library/00LOCK-rlang/00new/rlang/libs
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (rlang)
+* installing *source* package ‘devtools’ ...
+** package ‘devtools’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (devtools)
+* installing *source* package ‘dplyr’ ...
+** package ‘dplyr’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c chop.cpp -o chop.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c filter.cpp -o filter.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c funs.cpp -o funs.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c group_by.cpp -o group_by.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c group_data.cpp -o group_data.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c imports.cpp -o imports.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c init.cpp -o init.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c mask.cpp -o mask.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c mutate.cpp -o mutate.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c reconstruct.cpp -o reconstruct.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c slice.cpp -o slice.o
+g++ -std=gnu++14 -I"/usr/share/R/include" -DNDEBUG      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-wZDgjM/r-base-4.2.2.20221110=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c summarise.cpp -o summarise.o
+g++ -std=gnu++14 -shared -L/usr/lib/R/lib -Wl,-z,relro -o dplyr.so chop.o filter.o funs.o group_by.o group_data.o imports.o init.o mask.o mutate.o reconstruct.o slice.o summarise.o -L/usr/lib/R/lib -lR
+installing to /home/etienne_prx/R/library/00LOCK-dplyr/00new/dplyr/libs
+** R
+** data
+*** moving datasets to lazyload DB
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (dplyr)
+* installing *source* package ‘ggplot2’ ...
+** package ‘ggplot2’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** data
+*** moving datasets to lazyload DB
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (ggplot2)
+* installing *source* package ‘patchwork’ ...
+** package ‘patchwork’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (patchwork)
+
+The downloaded source packages are in
+	‘/tmp/Rtmpei2vaf/downloaded_packages’
+> 
+> # Load libraries
+> library(devtools, lib.loc = lib_path)
+Loading required package: usethis
+> library(remotes, lib.loc = lib_path)
+
+Attaching package: ‘remotes’
+
+The following objects are masked from ‘package:devtools’:
+
+    dev_package_deps, install_bioc, install_bitbucket, install_cran,
+    install_deps, install_dev, install_git, install_github,
+    install_gitlab, install_local, install_svn, install_url,
+    install_version, update_packages
+
+> 
+> # Set verbose options to get more information
+> options(verbose = TRUE)
+> options(warn = 2)  # Convert warnings to errors for better diagnostics
+> 
+> # Attempt to install the package from local directory
+> tryCatch({
++   print("Installing from local directory...")
++   devtools::install(".", lib = lib_path, dependencies = TRUE, upgrade = "never", force = TRUE)
++ }, error = function(e) {
++   print(paste("Error installing from local directory:", e))
++ })
+[1] "Installing from local directory..."
+now dyn.load("/home/etienne_prx/R/x86_64-pc-linux-gnu-library/4.2/tibble/libs/tibble.so") ...
+Cycle: 1 NNew: 45 
+Cycle: 2 NNew: 7 
+Cycle: 3 NNew: 0 
+now dyn.load("/home/etienne_prx/R/x86_64-pc-linux-gnu-library/4.2/processx/libs/processx.so") ...
+now dyn.load("/home/etienne_prx/R/x86_64-pc-linux-gnu-library/4.2/ps/libs/ps.so") ...
+── R CMD build ─────────────────────────────────────────────────────────────────
+* checking for file ‘/home/etienne_prx/Dropbox/Travail/CLESSN/cartessn/DESCRIPTION’ ... OK
+* preparing ‘cartessn’:
+* checking DESCRIPTION meta-information ... OK
+* checking for LF line-endings in source and make files and shell scripts
+* checking for empty or unneeded directories
+Removed empty directory ‘cartessn/data/canada_geo_boundaries/provinces’
+Removed empty directory ‘cartessn/data/canada_geo_boundaries’
+* building ‘cartessn_0.1.0.tar.gz’
+
+Running /usr/lib/R/bin/R CMD INSTALL /tmp/Rtmpei2vaf/cartessn_0.1.0.tar.gz \
+  --install-tests 
+* installing to library ‘/home/etienne_prx/R/x86_64-pc-linux-gnu-library/4.2’
+* installing *source* package ‘cartessn’ ...
+** using staged installation
+** R
+** data
+*** moving datasets to lazyload DB
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (cartessn)
+[1] "Error installing from local directory: Error in devtools::install(\".\", lib = lib_path, dependencies = TRUE, upgrade = \"never\", : (converted from warning) Arguments in `...` must be used.\n✖ Problematic argument:\n• lib = lib_path\nℹ Did you misspell an argument name?\n"
+> 
+> # Attempt to install from GitHub with different options
+> tryCatch({
++   print("Installing from GitHub with curl method...")
++   remotes::install_github("clessnverse/cartessn", 
++                          lib = lib_path, 
++                          dependencies = TRUE, 
++                          upgrade = "never",
++                          force = TRUE,
++                          INSTALL_opts = "--no-multiarch",
++                          ref = "main",
++                          build = TRUE,
++                          build_vignettes = FALSE,
++                          build_manual = FALSE,
++                          build_opts = c("--no-resave-data", "--no-manual", "--no-build-vignettes"),
++                          quiet = FALSE,
++                          type = "source",
++                          options(download.file.method = "curl"))
++ }, error = function(e) {
++   print(paste("Error installing from GitHub with curl:", e))
++ })
+[1] "Installing from GitHub with curl method..."
+Using GitHub PAT from the git credential store.
+now dyn.load("/home/etienne_prx/R/x86_64-pc-linux-gnu-library/4.2/curl/libs/curl.so") ...
+shared object '‘curl.so’' already loaded
+Downloading GitHub repo clessnverse/cartessn@main
+[1] "Error installing from GitHub with curl: Error: Failed to install 'cartessn' from GitHub:\n  Does not appear to be an R package (no DESCRIPTION)\n"
+> 
+> # Try with download.file.method set to "libcurl"
+> tryCatch({
++   print("Installing from GitHub with libcurl method...")
++   options(download.file.method = "libcurl")
++   remotes::install_github("clessnverse/cartessn", 
++                          lib = lib_path,
++                          dependencies = TRUE)
++ }, error = function(e) {
++   print(paste("Error installing from GitHub with libcurl:", e))
++ })
+[1] "Installing from GitHub with libcurl method..."
+Using GitHub PAT from the git credential store.
+Downloading GitHub repo clessnverse/cartessn@HEAD
