@@ -1,7 +1,7 @@
 ### Ce script sert à aller extraire les données de
 #### recensement par circonscription sur Stat Can
 
-url <- "https://www12.statcan.gc.ca/census-recensement/2021/dp-pd/prof/details/download-telecharger/comp/GetFile.cfm?Lang=F&FILETYPE=CSV&GEONO=029"
+url <- "https://www12.statcan.gc.ca/census-recensement/2021/dp-pd/prof/details/download-telecharger/comp/GetFile.cfm?Lang=E&FILETYPE=CSV&GEONO=029"
 destination_folder <- "data-raw/data/census_canada_2022_electoral_ridings"
 destination_file <- paste0(destination_folder, "/census_data.zip")
 
