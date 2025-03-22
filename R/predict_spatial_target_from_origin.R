@@ -378,6 +378,8 @@ predict_spatial_target <- function(
         dplyr::select(dplyr::where(~ !is.na(.))) |>
         names()
     
+      model_failed <- FALSE
+
       model <- tryCatch(
         suppressMessages(
           nnet::multinom(
@@ -387,22 +389,35 @@ predict_spatial_target <- function(
           )
         ),
         error = function(e) {
-          stats::setNames(
-            rep(0, length(unique(spatial_target[[target_col]]))),
-            sort(unique(spatial_target[[target_col]]))
-          )
+          model_failed <<- TRUE
+          NULL
         }
       )
-    
-      preds <- tryCatch(
-        stats::predict(model, newdata = survey_data[i, ], type = "prob"),
-        error = function(e) {
-          stats::setNames(
-            rep(0, length(unique(spatial_target[[target_col]]))),
-            sort(unique(spatial_target[[target_col]]))
+      
+      if (model_failed) {
+        preds <- stats::setNames(
+          rep(0, length(unique(spatial_target[[target_col]]))),
+          sort(unique(spatial_target[[target_col]]))
+        )
+      } else {
+        preds <- tryCatch(
+          stats::predict(model, newdata = survey_data[i, ], type = "prob"),
+          error = function(e) {
+            stats::setNames(
+              rep(0, length(unique(spatial_target[[target_col]]))),
+              sort(unique(spatial_target[[target_col]]))
+            )
+          }
+        )
+      
+        if (length(model$lev) == 2) {
+          preds <- stats::setNames(
+            c(1 - preds, preds),
+            model$lev
           )
         }
-      )      
+      }
+      
     
       if (length(model$lev) == 2) {
         preds <- stats::setNames(
