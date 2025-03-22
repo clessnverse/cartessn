@@ -393,7 +393,7 @@ predict_spatial_target <- function(
           NULL
         }
       )
-      
+
       if (model_failed) {
         preds <- stats::setNames(
           rep(0, length(unique(spatial_target[[target_col]]))),
@@ -433,16 +433,18 @@ predict_spatial_target <- function(
     flush.console()
   }
 
-  df_predictions <- dplyr::bind_rows(list_predictions) |>
-    dplyr::mutate(dplyr::across(dplyr::everything(), ~ tidyr::replace_na(.x, 0)))
+  return(list_predictions)
 
-  if (return_type == "class") {
-    return(df_predictions %>%
-      dplyr::mutate(.prediction = ifelse(rowSums(df_predictions) == 0, NA, names(.)[max.col(.)])) |>
-      dplyr::pull(.prediction))
-  }
+  #df_predictions <- dplyr::bind_rows(list_predictions) |>
+  #  dplyr::mutate(dplyr::across(dplyr::everything(), ~ tidyr::replace_na(.x, 0)))
+#
+  #if (return_type == "class") {
+  #  return(df_predictions %>%
+  #    dplyr::mutate(.prediction = ifelse(rowSums(df_predictions) == 0, NA, names(.)[max.col(.)])) |>
+  #    dplyr::pull(.prediction))
+  #}
 
-  return(df_predictions)
+  #return(df_predictions)
 }
 
 
