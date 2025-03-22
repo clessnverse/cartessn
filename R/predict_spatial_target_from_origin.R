@@ -386,7 +386,15 @@ predict_spatial_target <- function(
         )
       )
     
-      preds <- stats::predict(model, newdata = survey_data[i, ], type = "prob")
+      preds <- tryCatch(
+        stats::predict(model, newdata = survey_data[i, ], type = "prob"),
+        error = function(e) {
+          stats::setNames(
+            rep(0, length(unique(spatial_target[[target_col]]))),
+            sort(unique(spatial_target[[target_col]]))
+          )
+        }
+      )      
     
       if (length(model$lev) == 2) {
         preds <- stats::setNames(
