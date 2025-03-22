@@ -427,6 +427,8 @@ predict_spatial_target <- function(
       }
     }
 
+    preds <- preds[!is.na(names(preds))]
+
     list_predictions[[i]] <- round(preds, 2)
     pct <- floor(i / total * 100)
     cat(sprintf("\r         Progression: %3d%%", pct))
