@@ -58,8 +58,12 @@ intersect_spatial_objects <- function(spatial_ref, id_ref, spatial_target, id_ta
     dplyr::group_by(!!rlang::sym(id_ref)) %>% 
     dplyr::mutate(
       total_covered_area = sum(area_numeric),
-      prop_of_ref_area_covered_by_target = area_numeric / total_covered_area
+      prop_of_ref_area_covered_by_target = area_numeric / total_covered_area,
+      ## round prop to 4 decimals
+      prop_of_ref_area_covered_by_target = round(prop_of_ref_area_covered_by_target, 4)
     ) %>% 
+    ## remove 0
+    dplyr::filter(prop_of_ref_area_covered_by_target > 0) %>%
     dplyr::rename(
       area_covered_by_target_m2 = area_numeric
     ) %>% 
