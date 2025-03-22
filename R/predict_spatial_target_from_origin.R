@@ -378,12 +378,20 @@ predict_spatial_target <- function(
         dplyr::select(dplyr::where(~ !is.na(.))) |>
         names()
     
-      model <- suppressMessages(
-        nnet::multinom(
-          formula = paste0(target_col, " ~ ", paste0(non_empty_vars, collapse = " + ")),
-          data = simulated_datasets[[origin_id]],
-          trace = FALSE
-        )
+      model <- tryCatch(
+        suppressMessages(
+          nnet::multinom(
+            formula = paste0(target_col, " ~ ", paste0(non_empty_vars, collapse = " + ")),
+            data = simulated_datasets[[origin_id]],
+            trace = FALSE
+          )
+        ),
+        error = function(e) {
+          stats::setNames(
+            rep(0, length(unique(spatial_target[[target_col]]))),
+            sort(unique(spatial_target[[target_col]]))
+          )
+        }
       )
     
       preds <- tryCatch(
