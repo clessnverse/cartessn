@@ -102,7 +102,7 @@ census_canada_2022_electoral_ridings <- df_raw |>
   ) |> 
   mutate(
     prop = count / sum(count)
-  )
+  ) |> 
+  ungroup()
   
-
 save(census_canada_2022_electoral_ridings, file = "data/census_canada_2022_electoral_ridings.rda", compress = "bzip2")

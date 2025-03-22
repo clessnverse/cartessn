@@ -102,7 +102,8 @@ census_canada_2022_rta <- df_raw |>
   ) |> 
   mutate(
     prop = count / sum(count)
-  )
+  ) |> 
+  ungroup()
   
 
 save(census_canada_2022_rta, file = "data/census_canada_2022_rta.rda", compress = "bzip2")
