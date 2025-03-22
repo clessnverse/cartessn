@@ -260,7 +260,7 @@ city_mapping_canada_2025 <- list(
 #' @return An sf object (spatial dataframe) containing only the selected city's ridings
 #'
 #' @examples
-#' map_can <- cartessn::spatial_canada_2022_electoral_ridings
+#' map_can <- cartessn::spatial_canada_2022_electoral_ridings_aligned
 #' map_qc_city <- crop_map(map_can, "quebec_city")
 #'
 #' @importFrom dplyr filter
