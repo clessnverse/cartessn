@@ -435,18 +435,17 @@ predict_spatial_target <- function(
     flush.console()
   }
 
-  return(list_predictions)
+  #return(list_predictions)
 
-  #df_predictions <- dplyr::bind_rows(list_predictions) |>
-  #  dplyr::mutate(dplyr::across(dplyr::everything(), ~ tidyr::replace_na(.x, 0)))
-#
-  #if (return_type == "class") {
-  #  return(df_predictions %>%
-  #    dplyr::mutate(.prediction = ifelse(rowSums(df_predictions) == 0, NA, names(.)[max.col(.)])) |>
-  #    dplyr::pull(.prediction))
-  #}
+  df_predictions <- dplyr::bind_rows(list_predictions) |>
+    dplyr::mutate(dplyr::across(dplyr::everything(), ~ tidyr::replace_na(.x, 0)))
 
-  #return(df_predictions)
+  if (return_type == "class") {
+    return(df_predictions %>%
+      dplyr::mutate(.prediction = ifelse(rowSums(df_predictions) == 0, NA, names(.)[max.col(.)])) |>
+      dplyr::pull(.prediction))
+  }
+  return(df_predictions)
 }
 
 
