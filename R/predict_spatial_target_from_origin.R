@@ -366,12 +366,18 @@ predict_spatial_target <- function(
 
   for (i in seq_len(total)) {
     origin_id <- survey_data[[origin_col]][i]
-    case_i <- cases[[origin_id]]
+    case_i <- tryCatch(cases[[origin_id]], error = function(e) NA)
 
-    if (case_i == 1) {
+    if (is.na(case_i)) {
+      preds <- stats::setNames(rep(0, length(unique(spatial_target[[target_col]]))),
+                               sort(unique(spatial_target[[target_col]])))
+    } else if (case_i == 1) {
       preds <- unique_predictions[[origin_id]]
     } else {
-      non_empty_vars <- survey_data[i, ses_vars] |> dplyr::select(dplyr::where(~ !is.na(.))) |> names()
+      non_empty_vars <- survey_data[i, ses_vars] |>
+        dplyr::select(dplyr::where(~ !is.na(.))) |>
+        names()
+    
       model <- suppressMessages(
         nnet::multinom(
           formula = paste0(target_col, " ~ ", paste0(non_empty_vars, collapse = " + ")),
@@ -379,9 +385,9 @@ predict_spatial_target <- function(
           trace = FALSE
         )
       )
-
+    
       preds <- stats::predict(model, newdata = survey_data[i, ], type = "prob")
-
+    
       if (length(model$lev) == 2) {
         preds <- stats::setNames(
           c(1 - preds, preds),
@@ -400,7 +406,9 @@ predict_spatial_target <- function(
     dplyr::mutate(dplyr::across(dplyr::everything(), ~ tidyr::replace_na(.x, 0)))
 
   if (return_type == "class") {
-    return(df_predictions |> dplyr::mutate(.prediction = names(.)[max.col(.)]) |> dplyr::pull(.prediction))
+    return(df_predictions %>%
+      dplyr::mutate(.prediction = ifelse(rowSums(df_predictions) == 0, NA, names(.)[max.col(.)])) |>
+      dplyr::pull(.prediction))
   }
 
   return(df_predictions)
