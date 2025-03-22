@@ -24,7 +24,7 @@ intersect_spatial_objects(
 
 \item{id_target}{A string specifying the column name in \code{spatial_target} that contains unique identifiers.}
 
-\item{dTolerance}{A numeric value specisi j'utfying the simplification tolerance for spatial geometries before computing intersections. Default is \code{50}.}
+\item{dTolerance}{A numeric value specifying the simplification tolerance for spatial geometries before computing intersections. Default is \code{50}.}
 }
 \value{
 A tibble containing the intersections with the following columns:

@@ -1,21 +1,160 @@
-# Script rapide pour afficher toutes les circonscriptions
-# (à exécuter directement dans la console)
-
+# Test script for FSA to riding mapping and visualization
 library(sf)
+library(dplyr)
 library(ggplot2)
+library(cartessn)
 
+# Example: Map FSAs to electoral ridings ----------------------------------------
+
+# Load spatial data
+sf_rta <- cartessn::spatial_canada_2021_rta
+sf_ridings <- cartessn::spatial_canada_2022_electoral_ridings_aligned
+
+# Create the mapping
+mapping <- cartessn::map_fsa_to_ridings(sf_rta, sf_ridings)
+
+# Examine the results
+print(head(mapping$fsa_riding_intersections))
+print(head(mapping$fsa_to_riding_mapping))
+print(mapping$summary)
+
+# Simulate some data by riding for visualization --------------------------------
+set.seed(123)
+
+# Create a simulated dataset with values by riding
+sf_ridings_with_data <- sf_ridings %>%
+  mutate(
+    simulated_value = runif(n(), 0, 100),
+    category = sample(c("Category A", "Category B", "Category C"), n(), replace = TRUE)
+  )
+
+# Test the map visualization functions -----------------------------------------
+
+# Create a basic map of all ridings
+basic_map <- cartessn::create_map(
+  sf_ridings_with_data,
+  value_column = "simulated_value",
+  title = "Simulated Values by Electoral Riding",
+  subtitle = "Random data for demonstration",
+  caption = "Source: Simulated data",
+  legend_title = "Value"
+)
+
+# Save the map
+ggsave("data-raw/data/basic_map_example.png", basic_map, width = 10, height = 8)
+
+# Create a multi-panel map for specific regions
+multi_panel_map <- cartessn::create_multi_panel_map(
+  sf_ridings_with_data,
+  regions = c("quebec_city", "montreal", "toronto"),
+  value_column = "simulated_value",
+  title = "Simulated Values by Region",
+  background = "dark"
+)
+
+# Save the multi-panel map
+ggsave("data-raw/data/multi_panel_map_example.png", multi_panel_map, width = 15, height = 10)
+
+# Example: Working with FSA data and mapping to ridings ------------------------
+
+# Simulate some data at the FSA level (e.g., survey responses by postal code)
+# In a real scenario, this would be actual survey or administrative data
+set.seed(456)
+
+# Get a sample of FSAs
+sample_fsas <- sample(sf_rta$rta, 100)
+
+# Create simulated data
+simulated_fsa_data <- data.frame(
+  rta = sample_fsas,
+  response_count = sample(10:500, length(sample_fsas), replace = TRUE),
+  avg_rating = rnorm(length(sample_fsas), mean = 7, sd = 1.5)
+)
+
+# Join with the FSA-riding mapping to get riding IDs
+fsa_data_with_ridings <- simulated_fsa_data %>%
+  left_join(mapping$fsa_to_riding_mapping, by = "rta")
+
+# Summarize data by riding
+riding_summary <- fsa_data_with_ridings %>%
+  group_by(id_riding) %>%
+  summarize(
+    total_responses = sum(response_count),
+    avg_rating = weighted.mean(avg_rating, response_count, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Join the summary with spatial data for mapping
+sf_ridings_for_visualization <- sf_ridings %>%
+  left_join(riding_summary, by = "id_riding")
+
+# Create a map of the aggregated data
+aggregated_map <- cartessn::create_map(
+  sf_ridings_for_visualization,
+  value_column = "avg_rating",
+  title = "Average Rating by Electoral Riding",
+  subtitle = "Aggregated from simulated FSA-level data",
+  caption = "Source: Simulated FSA data mapped to ridings",
+  legend_title = "Avg. Rating",
+  fill_color = c("#f7fbff", "#deebf7", "#c6dbef", "#9ecae1", "#6baed6", "#4292c6", "#2171b5", "#084594")
+)
+
+# Save the map
+ggsave("data-raw/data/aggregated_data_map.png", aggregated_map, width = 10, height = 8)
+
+# Demonstration of working with real survey data -------------------------------
+# Uncomment and adapt this section if you have actual survey data
+
+# # Example with real survey data (adapt column names as needed)
+# survey_data <- readRDS("path/to/survey_data.rds")
+# 
+# # Extract FSA (first 3 characters of postal code)
+# survey_data$rta <- substr(survey_data$postal_code, 1, 3)
+# 
+# # Assign riding IDs
+# survey_data <- survey_data %>%
+#   left_join(mapping$fsa_to_riding_mapping, by = "rta")
+# 
+# # Check match rate
+# match_count <- sum(!is.na(survey_data$id_riding))
+# total_count <- nrow(survey_data)
+# match_rate <- match_count / total_count * 100
+# 
+# print(paste0("Successfully matched ", match_count, " out of ", total_count, 
+#              " respondents (", round(match_rate, 2), "%)"))
+# 
+# # Aggregate data by riding for analysis or visualization
+# riding_data <- survey_data %>%
+#   group_by(id_riding) %>%
+#   summarize(
+#     respondent_count = n(),
+#     # Add additional summary statistics based on your survey columns
+#     # For example:
+#     avg_age = mean(age, na.rm = TRUE),
+#     pct_female = mean(gender == "Female", na.rm = TRUE) * 100,
+#     # ...
+#     .groups = "drop"
+#   )
+# 
+# # Join with spatial data and create maps
+# # ...
+
+# Save mapping results for later use ------------------------------------------
+# Uncomment if you want to save the mapping for future use
+
+# saveRDS(mapping$fsa_riding_intersections, "path/to/save/fsa_riding_intersections.rds")
+# saveRDS(mapping$fsa_to_riding_mapping, "path/to/save/fsa_to_riding_mapping.rds")
+
+# Original visualizations (kept for reference) --------------------------------
+
+# Script rapide pour afficher toutes les circonscriptions
 # Charger les circonscriptions électorales alignées
 load("data/spatial_canada_2022_electoral_ridings_aligned.rda")
-# Maintenant vous avez l'objet "spatial_canada_2022_electoral_ridings_aligned" dans votre environnement
 
 # Pour les provinces, utilisez l'une de ces méthodes :
-
 # OPTION 1 : Si vous avez le fichier .rda des provinces comme dans votre script original
 load("data/spatial_canada_provinces_simple.rda")
 provinces_shp <- provinces_simple  # Utiliser directement l'objet chargé
-
-# OPTION 2 : Si vous devez utiliser le shapefile, corrigez le chemin
-# provinces_shp <- sf::st_read("/chemin/correct/vers/provinces/lpr_000b21a_f.shp", quiet = TRUE)
 
 # Maintenant vous pouvez transformer
 common_crs <- st_crs(spatial_canada_2022_electoral_ridings_aligned)
@@ -28,7 +167,6 @@ provinces_simple <- st_simplify(provinces_shp, preserveTopology = TRUE, dToleran
 valid_count <- sum(!st_is_empty(spatial_canada_2022_electoral_ridings_aligned$geometry))
 cat("Nombre de circonscriptions avec géométrie valide:", valid_count, "/", 
     nrow(spatial_canada_2022_electoral_ridings_aligned), "\n")
-
 
 # Créer un thème personnalisé inspiré de la carte partagée
 theme_dark_map <- function() {
@@ -62,9 +200,5 @@ map_stylized <- ggplot() +
     caption = "Source: Données électorales 2022"
   )
 
-# Afficher la carte
-print(map_stylized)
-
-
 # Sauvegarder la carte si souhaité
-ggsave("data-raw/data/toutes_circonscriptions_alignees.png", map_all, width = 12, height = 10, dpi = 300)
+ggsave("data-raw/data/toutes_circonscriptions_alignees.png", map_stylized, width = 12, height = 10, dpi = 300)

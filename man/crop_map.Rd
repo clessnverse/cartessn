@@ -33,7 +33,7 @@ from a spatial dataframe. It filters the ridings based on IDs and crops
 the result to the geographic extent of the city.
 }
 \examples{
-map_can <- cartessn::spatial_canada_2022_electoral_ridings
+map_can <- cartessn::spatial_canada_2022_electoral_ridings_aligned
 map_qc_city <- crop_map(map_can, "quebec_city")
 
 }
