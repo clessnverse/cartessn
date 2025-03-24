@@ -40,11 +40,11 @@
 simulate_respondents_from_census_unit <- function(
   origin_unit_id,                    # ID d'une unité spatiale d'origine (ex: "G2L")
   n = 500,                           # Nombre de répondants à simuler
-  spatial_intersection,             # Table avec les recouvrements spatiaux (ex: df_intersections)
-  origin_id_col = "origin",         # Nom de la colonne d'identifiant de l'unité d'origine
-  target_id_col = "target",         # Nom de la colonne d'identifiant de l'unité cible
-  census_origin,                    # Recensement par unité d'origine
-  census_target                     # Recensement par unité cible
+  spatial_intersection,              # Table avec les recouvrements spatiaux (ex: df_intersections)
+  origin_id_col = "origin",          # Nom de la colonne d'identifiant de l'unité d'origine
+  target_id_col = "target",          # Nom de la colonne d'identifiant de l'unité cible
+  census_origin,                     # Recensement par unité d'origine
+  census_target                      # Recensement par unité cible
 ) {
   # --- Vérifications ---
   required_cols <- c("variable", "category", "prop")
@@ -111,7 +111,21 @@ simulate_respondents_from_census_unit <- function(
 
     respondents[[var]] <- purrr::map_chr(respondents[[target_id_col]], function(target_val) {
       dist_r <- dist_var %>% filter(.data[[target_id_col]] == target_val)
-      sample(dist_r$category, size = 1, prob = dist_r$prop)
+      
+      # Vérifier et gérer les NA dans le vecteur de probabilités
+      if (any(is.na(dist_r$prop)) || length(dist_r$prop) == 0) {
+        # Si toutes les probabilités sont NA ou si le vecteur est vide, 
+        # utiliser une distribution uniforme (équiprobable)
+        if (length(dist_r$category) > 0) {
+          return(sample(dist_r$category, size = 1, replace = TRUE))
+        } else {
+          # Si aucune catégorie n'est disponible, retourner NA
+          return(NA_character_)
+        }
+      } else {
+        # Utiliser le vecteur de probabilités sans NA
+        return(sample(dist_r$category, size = 1, prob = dist_r$prop))
+      }
     })
   }
 
