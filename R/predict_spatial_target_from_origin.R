@@ -360,6 +360,22 @@ predict_spatial_target <- function(
     )
   )
 
+  # Sécuriser les origines pour garantir qu'elles existent dans spatial_intersection
+  valid_origins <- unique(spatial_intersection[[origin_col]])
+  survey_data_filtered <- survey_data
+  invalid_origins <- setdiff(unique(survey_data[[origin_col]]), valid_origins)
+  
+  if (length(invalid_origins) > 0) {
+    warning(
+      "Certaines unités d'origine dans `survey_data` n'ont pas d'intersections spatiales valides: ",
+      paste(head(invalid_origins, 5), collapse = ", "), 
+      if(length(invalid_origins) > 5) " et d'autres..." else ""
+    )
+    # Conserver uniquement les origines valides
+    survey_data_filtered <- survey_data %>%
+      dplyr::filter(.data[[origin_col]] %in% valid_origins)
+  }
+
   sim_result <- prepare_simulations(
     census_origin = census_origin,
     census_target = census_target,
@@ -367,99 +383,140 @@ predict_spatial_target <- function(
     origin_col = origin_col,
     target_col = target_col,
     n_sim = n_sim,
-    origins = unique(survey_data[[origin_col]])
+    origins = unique(survey_data_filtered[[origin_col]])
   )
 
   cases <- sim_result$cases
   unique_predictions <- sim_result$unique_predictions
   simulated_datasets <- sim_result$simulated_datasets
-  list_predictions <- vector("list", nrow(survey_data))
+  
+  # Initialiser tous les résultats comme NA
+  all_predictions <- rep(NA_character_, nrow(survey_data))
+  
+  # Seulement traiter les lignes correspondant aux origines valides
+  valid_indices <- which(survey_data[[origin_col]] %in% valid_origins)
+  list_predictions <- vector("list", length(valid_indices))
 
-  message("Entrainement et prédiction des modèles sur chaque rangée de `survey_data`...")
-  total <- nrow(survey_data)
+  message("Entrainement et prédiction des modèles sur chaque rangée valide de `survey_data`...")
+  total <- length(valid_indices)
 
-  for (i in seq_len(total)) {
+  for (i_idx in seq_len(total)) {
+    i <- valid_indices[i_idx]
     origin_id <- survey_data[[origin_col]][i]
     case_i <- tryCatch(cases[[origin_id]], error = function(e) NA)
 
     if (is.na(case_i)) {
-      preds <- stats::setNames(rep(0, length(unique(spatial_target[[target_col]]))),
-                               sort(unique(spatial_target[[target_col]])))
+      # Utiliser la RTA la plus probable pour cette région
+      closest_rta <- spatial_intersection %>%
+        dplyr::filter(.data[[origin_col]] == origin_id) %>%
+        dplyr::slice_max(prop_of_ref_area_covered_by_target, n = 1) %>%
+        dplyr::pull(.data[[target_col]])
+      
+      if (length(closest_rta) > 0) {
+        preds <- stats::setNames(1, closest_rta)
+      } else {
+        preds <- stats::setNames(rep(0, length(unique(spatial_target[[target_col]]))),
+                                 sort(unique(spatial_target[[target_col]])))
+      }
     } else if (case_i == 1) {
       preds <- unique_predictions[[origin_id]]
     } else {
+      # Filtrer les variables qui ne sont pas NA dans cette ligne
       non_empty_vars <- survey_data[i, ses_vars] |>
         dplyr::select(dplyr::where(~ !is.na(.))) |>
         names()
-    
-      model_failed <- FALSE
-
-      model <- tryCatch(
-        suppressMessages(
-          nnet::multinom(
-            formula = paste0(target_col, " ~ ", paste0(non_empty_vars, collapse = " + ")),
-            data = simulated_datasets[[origin_id]],
-            trace = FALSE
-          )
-        ),
-        error = function(e) {
-          model_failed <<- TRUE
-          NULL
-        }
-      )
-
-      if (model_failed) {
-        preds <- stats::setNames(
-          rep(0, length(unique(spatial_target[[target_col]]))),
-          sort(unique(spatial_target[[target_col]]))
-        )
+      
+      if (length(non_empty_vars) == 0) {
+        # Si toutes les variables SES sont NA, utiliser une distribution uniforme
+        target_ids <- unique(simulated_datasets[[origin_id]][[target_col]])
+        preds <- stats::setNames(rep(1/length(target_ids), length(target_ids)), target_ids)
       } else {
-        preds <- tryCatch(
-          stats::predict(model, newdata = survey_data[i, ], type = "prob"),
-          error = function(e) {
-            stats::setNames(
-              rep(0, length(unique(spatial_target[[target_col]]))),
-              sort(unique(spatial_target[[target_col]]))
+        model_failed <- FALSE
+        
+        model <- tryCatch(
+          suppressMessages(
+            nnet::multinom(
+              formula = paste0(target_col, " ~ ", paste0(non_empty_vars, collapse = " + ")),
+              data = simulated_datasets[[origin_id]],
+              trace = FALSE
             )
+          ),
+          error = function(e) {
+            model_failed <<- TRUE
+            NULL
           }
         )
-      
-        if (length(model$lev) == 2) {
+
+        if (model_failed) {
+          # Si le modèle échoue, utiliser la distribution empirique des targets dans les données simulées
+          target_counts <- table(simulated_datasets[[origin_id]][[target_col]])
           preds <- stats::setNames(
-            c(1 - preds, preds),
-            model$lev
+            as.numeric(target_counts) / sum(target_counts),
+            names(target_counts)
           )
+        } else {
+          preds <- tryCatch(
+            stats::predict(model, newdata = survey_data[i, ], type = "prob"),
+            error = function(e) {
+              # Si la prédiction échoue, utiliser la distribution empirique
+              target_counts <- table(simulated_datasets[[origin_id]][[target_col]])
+              stats::setNames(
+                as.numeric(target_counts) / sum(target_counts),
+                names(target_counts)
+              )
+            }
+          )
+          
+          # Correction pour le cas binaire
+          if (is.numeric(preds) && length(model$lev) == 2) {
+            preds <- stats::setNames(
+              c(1 - preds, preds),
+              model$lev
+            )
+          }
         }
-      }
-      
-    
-      if (length(model$lev) == 2) {
-        preds <- stats::setNames(
-          c(1 - preds, preds),
-          model$lev
-        )
       }
     }
 
     preds <- preds[!is.na(names(preds))]
-
-    list_predictions[[i]] <- round(preds, 2)
-    pct <- floor(i / total * 100)
+    list_predictions[[i_idx]] <- preds
+    
+    # Stocker directement la classe la plus probable si demandé
+    if (return_type == "class" && sum(preds) > 0) {
+      all_predictions[i] <- names(preds)[which.max(preds)]
+    }
+    
+    pct <- floor(i_idx / total * 100)
     cat(sprintf("\r         Progression: %3d%%", pct))
     flush.console()
   }
+  
+  cat("\n")
 
-  #return(list_predictions)
-
-  df_predictions <- dplyr::bind_rows(list_predictions) |>
-    dplyr::mutate(dplyr::across(dplyr::everything(), ~ tidyr::replace_na(.x, 0)))
-
-  if (return_type == "class") {
-    return(df_predictions %>%
-      dplyr::mutate(.prediction = ifelse(rowSums(df_predictions) == 0, NA, names(.)[max.col(.)])) |>
-      dplyr::pull(.prediction))
+  # Pour le retour de type "probabilities", préparer une matrice complète
+  if (return_type == "probabilities") {
+    # Créer un data frame avec toutes les colonnes possibles (circonscriptions)
+    all_targets <- sort(unique(spatial_target[[target_col]]))
+    
+    # Initialiser une matrice vide avec des 0
+    df_predictions <- matrix(0, nrow = nrow(survey_data), ncol = length(all_targets))
+    colnames(df_predictions) <- all_targets
+    
+    # Remplir les valeurs pour les lignes traitées
+    for (i_idx in seq_len(total)) {
+      i <- valid_indices[i_idx]
+      preds <- list_predictions[[i_idx]]
+      for (j in seq_along(preds)) {
+        target_name <- names(preds)[j]
+        df_predictions[i, target_name] <- preds[j]
+      }
+    }
+    
+    return(as.data.frame(df_predictions))
+  } else {
+    # Pour le type "class", retourner directement le vecteur des prédictions
+    return(all_predictions)
   }
-  return(df_predictions)
 }
 
 
