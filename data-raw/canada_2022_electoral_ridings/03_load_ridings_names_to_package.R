@@ -1,60 +1,49 @@
-## This script will only load the names of the electoral ridings as a dataframe accesible via the package.
-
+# This script extracts just the names of the 2023 Canadian federal electoral districts
+## as a dataframe accessible via the package without the geometry data.
 # Packages ---------------------------------------------------------------
 library(dplyr)
+library(sf)
 
-# List files to merge together -------------------------------------------------------------
-files <- list.files(
-  "data-raw/data/canada_2022_electoral_ridings/shapefiles/",
-  pattern = ".shp$",
-  full.names = TRUE,
-  recursive = TRUE
-)
+# Define shapefile paths -------------------------------------------------
+shp_folder_path <- "data-raw/data/canada_2022_electoral_ridings/"
+shapefile_path <- file.path(shp_folder_path, "CF_CA_2023_FR.shp")
 
-
-# Merge ------------------------------------------------------------------
-df_shapefiles_together <- lapply(
-  files,
-  FUN = function(x){
-    df <- as.data.frame(sf::st_read(x))
-    print(x)
-    return(df)
-  }
-) |> 
-  dplyr::bind_rows() |> 
-  select(
-    id_riding = FED_NUM,
-    name_riding_en = ED_NAMEE,
-    name_riding_fr = ED_NAMEF,
-    id_province = PROV_CODE
-  )
-
-df_territories_shapefiles <- as.data.frame(sf::st_read("data-raw/data/canada_2013_electoral_ridings/files/lfed000a16a_e.shp")) |> 
-  ## filter for territories only
-  filter(
-    `FEDUID` %in% c(
-      60001,
-      61001,
-      62001
-      )
-  ) |> 
+# Load and extract riding names ------------------------------------------
+names_canada_2022_electoral_ridings <- sf::st_read(shapefile_path) |>
+  # Convert to a regular dataframe (drop geometry)
+  as.data.frame() |>
+  # Select and rename columns to match the expected structure
+  dplyr::select(
+    id_riding = NUM_CF,      # NUM_CF est la colonne d'ID de circonscription
+    name_riding_fr = CF_NOMFR, # CF_NOMFR est la colonne du nom français
+    name_riding_en = CF_NOMAN, # CF_NOMAN est la colonne du nom anglais
+    dec_rep = DEC_REP    # Conserver DEC_REP temporairement pour le mappage
+  ) |>
+  # Remove any duplicates
+  distinct(id_riding, .keep_all = TRUE) |>
+  # Ajouter le code de province basé sur le préfixe de id_riding
   mutate(
     id_province = case_when(
-      `FEDUID` == 60001 ~ "YT",
-      `FEDUID` == 61001 ~ "NT",
-      `FEDUID` == 62001 ~ "NU"
+      substr(id_riding, 1, 2) == "10" ~ "NL", # Newfoundland and Labrador
+      substr(id_riding, 1, 2) == "11" ~ "PE", # Prince Edward Island
+      substr(id_riding, 1, 2) == "12" ~ "NS", # Nova Scotia
+      substr(id_riding, 1, 2) == "13" ~ "NB", # New Brunswick
+      substr(id_riding, 1, 2) == "24" ~ "QC", # Quebec
+      substr(id_riding, 1, 2) == "35" ~ "ON", # Ontario
+      substr(id_riding, 1, 2) == "46" ~ "MB", # Manitoba
+      substr(id_riding, 1, 2) == "47" ~ "SK", # Saskatchewan
+      substr(id_riding, 1, 2) == "48" ~ "AB", # Alberta
+      substr(id_riding, 1, 2) == "59" ~ "BC", # British Columbia
+      substr(id_riding, 1, 2) == "60" ~ "YT", # Yukon
+      substr(id_riding, 1, 2) == "61" ~ "NT", # Northwest Territories
+      substr(id_riding, 1, 2) == "62" ~ "NU", # Nunavut
+      TRUE ~ "Unknown"
     )
-  ) |> 
-  select(
-    id_riding = `FEDUID`,
-    name_riding_en = `FEDENAME`,
-    name_riding_fr = `FEDFNAME`,
-    id_province,
-    -geometry
-  )
+  ) |>
+  # Supprimer la colonne dec_rep qui n'est plus nécessaire
+  select(-dec_rep)
 
-names_canada_2022_electoral_ridings <- rbind(df_shapefiles_together, df_territories_shapefiles) |> 
-  ## remove duplicates of id_riding
-  distinct(id_riding, .keep_all = TRUE)
-
-save(names_canada_2022_electoral_ridings, file = "data/names_canada_2022_electoral_ridings.rda", compress = "bzip2")
+# Save the processed data ------------------------------------------------
+save(names_canada_2022_electoral_ridings,
+     file = "data/names_canada_2022_electoral_ridings.rda",
+     compress = "bzip2")
