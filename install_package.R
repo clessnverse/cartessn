@@ -1,69 +1,86 @@
-# Set a custom library path
+# Installation locale du package cartessn
+# Script amélioré pour résoudre les problèmes de téléchargement
+
+# Configuration initiale
 lib_path <- "~/R/library"
 dir.create(lib_path, showWarnings = FALSE, recursive = TRUE)
 
-# Attempt to install dependencies first
-install.packages(c("devtools", "remotes", "sf", "dplyr", "ggplot2", "patchwork", "rlang"), 
-                 repos = "https://cloud.r-project.org",
-                 lib = lib_path)
+# Ajustement des options de téléchargement
+options(timeout = 600)  # Augmenter le timeout à 10 minutes
 
-# Load libraries
+# Installation des dépendances essentielles
+needed_packages <- c("devtools", "remotes", "sf", "dplyr", "ggplot2", "patchwork", "rlang")
+for (pkg in needed_packages) {
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    install.packages(pkg, repos = "https://cloud.r-project.org", lib = lib_path)
+  }
+}
+
+# Charger les librairies nécessaires
 library(devtools, lib.loc = lib_path)
 library(remotes, lib.loc = lib_path)
 
-# Set verbose options to get more information
+# Désactiver les avertissements comme erreurs pour éviter les interruptions
+options(warn = 1)  # Afficher les avertissements sans arrêter
 options(verbose = TRUE)
-options(warn = 2)  # Convert warnings to errors for better diagnostics
 
-# Attempt to install the package from local directory
+# Définir clairement le chemin complet du répertoire actuel
+current_dir <- getwd()
+message("Installation depuis le répertoire: ", current_dir)
+
+# Installation prioritaire depuis le répertoire local
 tryCatch({
-  print("Installing from local directory...")
-  devtools::install(".", lib = lib_path, dependencies = TRUE, upgrade = "never", force = TRUE)
+  message("Installation depuis le répertoire local...")
+  devtools::install(".", lib = lib_path, dependencies = TRUE, upgrade = "never", force = TRUE, quiet = FALSE)
+  message("Installation locale réussie!")
+  quit(save = "no", status = 0)  # Sortir si l'installation locale réussit
 }, error = function(e) {
-  print(paste("Error installing from local directory:", e))
+  message("Erreur lors de l'installation locale: ", e$message)
+  message("Tentative d'installation depuis GitHub...")
 })
 
-# Attempt to install from GitHub with different options
+# Tentatives d'installation depuis GitHub avec différentes méthodes
+# Méthode 1: Installation standard
 tryCatch({
-  print("Installing from GitHub with curl method...")
+  message("Tentative 1: Installation GitHub standard...")
   remotes::install_github("clessnverse/cartessn", 
-                         lib = lib_path, 
-                         dependencies = TRUE, 
-                         upgrade = "never",
-                         force = TRUE,
-                         INSTALL_opts = "--no-multiarch",
-                         ref = "main",
-                         build = TRUE,
-                         build_vignettes = FALSE,
-                         build_manual = FALSE,
-                         build_opts = c("--no-resave-data", "--no-manual", "--no-build-vignettes"),
-                         quiet = FALSE,
-                         type = "source",
-                         options(download.file.method = "curl"))
+                         dependencies = TRUE,
+                         force = TRUE)
 }, error = function(e) {
-  print(paste("Error installing from GitHub with curl:", e))
+  message("Échec de la tentative 1: ", e$message)
 })
 
-# Try with download.file.method set to "libcurl"
+# Méthode 2: Avec libcurl 
 tryCatch({
-  print("Installing from GitHub with libcurl method...")
+  message("Tentative 2: Installation avec libcurl...")
   options(download.file.method = "libcurl")
   remotes::install_github("clessnverse/cartessn", 
-                         lib = lib_path,
-                         dependencies = TRUE)
+                         dependencies = TRUE,
+                         force = TRUE)
 }, error = function(e) {
-  print(paste("Error installing from GitHub with libcurl:", e))
+  message("Échec de la tentative 2: ", e$message)
 })
 
-# Try with download.file.method set to "wget"
+# Méthode 3: Avec wget
 tryCatch({
-  print("Installing from GitHub with wget method...")
+  message("Tentative 3: Installation avec wget...")
   options(download.file.method = "wget")
   remotes::install_github("clessnverse/cartessn", 
-                         lib = lib_path,
-                         dependencies = TRUE)
+                         dependencies = TRUE,
+                         force = TRUE)
 }, error = function(e) {
-  print(paste("Error installing from GitHub with wget:", e))
+  message("Échec de la tentative 3: ", e$message)
 })
 
-print("Installation attempts completed.")
+# Vérification finale
+if (requireNamespace("cartessn", quietly = TRUE)) {
+  message("Installation réussie! Le package cartessn est maintenant disponible.")
+} else {
+  message("ÉCHEC: Le package n'a pas pu être installé. Vérifiez votre connexion internet et les permissions GitHub.")
+  message("Vous pouvez toujours utiliser le package localement avec:")
+  message("devtools::load_all(\".\")")
+}
+
+# Enregistrer les informations d'installation dans un log
+cat(paste("Tentative d'installation:", Sys.time(), "\n"), 
+    file = "install_log.txt", append = TRUE)
