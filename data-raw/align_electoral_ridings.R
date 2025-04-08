@@ -1,154 +1,177 @@
-# Script optimisé pour aligner les circonscriptions électorales 
-# avec les frontières provinciales
+# Script pour aligner les circonscriptions électorales avec les frontières provinciales simplifiées
 
-# Packages ---------------------------------------------------------------
+# Chargement des packages nécessaires
 library(sf)
 library(dplyr)
 library(ggplot2)
 
-# Fonction d'alignement optimisée ----------------------------------------
+# Fonction d'alignement
 align_ridings_to_provinces <- function() {
-  message("### Démarrage de l'alignement optimisé ###")
+  message("### Démarrage de l'alignement des circonscriptions ###")
   
-  # 1. Charger les données
+  # 1. Chargement des données
   message("Chargement des données...")
   
   # Circonscriptions électorales
   load("data/spatial_canada_2022_electoral_ridings.rda")
   ridings_shp <- spatial_canada_2022_electoral_ridings
   
-  # Provinces
+  # Provinces simplifiées
   load("data/spatial_canada_provinces_simple.rda")
-  # Ici on corrige l'affectation - utiliser le bon nom d'objet
-  # Corriger le nom de l'objet selon ce qui est réellement dans le fichier
-  provinces_shp <- get(ls()[grep("province", ls())])
+  # Récupération de l'objet des provinces (s'adapte au nom variable)
+  all_objects <- ls()
+  province_obj_name <- all_objects[grep("province", all_objects)]
+  provinces_shp <- get(province_obj_name)
   
-  # 2. Uniformiser les projections
+  # 2. Vérification et uniformisation des projections
   message("Uniformisation des projections...")
-  common_crs <- st_crs(ridings_shp)
-  provinces_shp <- st_transform(provinces_shp, common_crs)
+  if (st_crs(ridings_shp) != st_crs(provinces_shp)) {
+    provinces_shp <- st_transform(provinces_shp, st_crs(ridings_shp))
+  }
   
-  # 3. Simplifier les géométries de manière plus agressive pour améliorer les performances
+  # 3. Simplification adaptative des géométries
   message("Simplification des géométries...")
-  provinces_simple <- st_simplify(provinces_shp, preserveTopology = TRUE, dTolerance = 500)
-  # Simplifier également les circonscriptions pour accélérer le traitement
-  ridings_simple <- st_simplify(ridings_shp, preserveTopology = TRUE, dTolerance = 100)
+  # Simplification adaptative basée sur la taille des circonscriptions
+  ridings_simplified <- ridings_shp %>%
+    mutate(area = as.numeric(st_area(.)),
+           # Calcul d'une tolérance variable selon la taille (plus petit = moins simplifié)
+           tolerance = pmin(sqrt(area)/100, 200)) 
   
-  # 4. Préparation des provinces
-  message("Préparation des frontières provinciales...")
+  # Application de la simplification avec tolérance variable
+  ridings_list <- vector("list", nrow(ridings_simplified))
+  for (i in 1:nrow(ridings_simplified)) {
+    ridings_list[[i]] <- st_simplify(
+      ridings_simplified[i,], 
+      preserveTopology = TRUE, 
+      dTolerance = ridings_simplified$tolerance[i]
+    )
+    # Affichage périodique de la progression
+    if (i %% 50 == 0) message("Simplification: ", i, "/", nrow(ridings_simplified))
+  }
+  
+  # Reconstitution du sf object
+  ridings_simple <- do.call(rbind, ridings_list)
+  rm(ridings_list) # Libération de mémoire
+  gc()
+  
+  # 4. Préparation et simplification des provinces
+  message("Préparation des provinces...")
+  # Simplification variable selon la taille des provinces
+  provinces_shp <- provinces_shp %>%
+    mutate(area = as.numeric(st_area(.)),
+           # Plus grandes provinces = plus simplifiées
+           tolerance = pmin(sqrt(area)/200, 500))
+  
+  provinces_list <- vector("list", nrow(provinces_shp))
+  for (i in 1:nrow(provinces_shp)) {
+    provinces_list[[i]] <- st_simplify(
+      provinces_shp[i,], 
+      preserveTopology = TRUE, 
+      dTolerance = provinces_shp$tolerance[i]
+    )
+  }
+  
+  provinces_simple <- do.call(rbind, provinces_list)
+  rm(provinces_list)
+  gc()
+  
+  # Validation des géométries
   provinces_simple <- st_make_valid(provinces_simple)
+  ridings_simple <- st_make_valid(ridings_simple)
   
-  # 5. Utiliser une approche vectorisée plus efficace pour le découpage
-  message("Découpage des circonscriptions avec les provinces (méthode vectorisée)...")
+  # 5. Intersection par lots avec gestion d'erreurs
+  message("Découpage des circonscriptions par provinces...")
   
-  # Au lieu de traiter circonscription par circonscription, on fait une seule opération
-  gc() # Libérer la mémoire avant l'opération intensive
+  # Préparation du résultat
+  riding_aligned <- ridings_simple
   
-  # Utiliser st_intersection en une seule opération (plus efficace)
-  riding_fixed <- try({
-    message("Tentative d'intersection vectorisée...")
-    st_intersection(ridings_simple, st_union(provinces_simple))
-  })
+  # Taille de lot adaptée à la mémoire disponible
+  batch_size <- 20
+  n_batches <- ceiling(nrow(ridings_simple) / batch_size)
   
-  # Si l'opération vectorisée échoue, on revient à une méthode par lots
-  if (inherits(riding_fixed, "try-error")) {
-    message("L'intersection vectorisée a échoué, passage à la méthode par lots...")
+  for (batch in 1:n_batches) {
+    message("Traitement du lot ", batch, "/", n_batches)
     
-    # Créer une copie pour stocker les résultats
-    riding_fixed <- ridings_simple
+    # Indices pour ce lot
+    start_idx <- (batch-1) * batch_size + 1
+    end_idx <- min(batch * batch_size, nrow(ridings_simple))
+    batch_indices <- start_idx:end_idx
     
-    # Traiter par lots plus grands pour réduire les itérations
-    batch_size <- 50 # Augmenter la taille des lots
-    n_batches <- ceiling(nrow(ridings_simple) / batch_size)
-    
-    # Utiliser une approche par province plutôt que de tout fusionner
-    # Cela permet de réduire la complexité des géométries
-    for (i in 1:n_batches) {
-      message("Batch ", i, "/", n_batches)
+    # Pour chaque circonscription dans ce lot
+    for (i in batch_indices) {
+      # Identifie la province qui a la plus grande intersection avec cette circonscription
+      intersections <- st_intersection(st_geometry(ridings_simple[i,]), st_geometry(provinces_simple))
       
-      start_idx <- (i-1) * batch_size + 1
-      end_idx <- min(i * batch_size, nrow(ridings_simple))
-      
-      # Traiter ce lot de circonscriptions
-      batch_ridings <- ridings_simple[start_idx:end_idx, ]
-      
-      # Pour chaque province, trouver les circonscriptions qui l'intersectent
-      # et faire l'intersection seulement pour celles-là
-      for (p in 1:nrow(provinces_simple)) {
-        province_geom <- provinces_simple$geometry[p]
-        
-        # Identifier les circonscriptions qui intersectent cette province
-        intersects <- st_intersects(batch_ridings, province_geom, sparse = FALSE)[,1]
-        
-        if (any(intersects)) {
-          # Traiter seulement les circonscriptions qui intersectent cette province
-          intersect_indices <- which(intersects)
-          
-          for (j in intersect_indices) {
-            j_global <- start_idx + j - 1
-            
-            tryCatch({
-              # Intersection avec cette province uniquement
-              # On utilise directement la géométrie pour éviter des problèmes de colonnes
-              tmp_intersection <- st_intersection(
-                st_geometry(ridings_simple)[j_global], 
-                province_geom
-              )
-              
-              # Mettre à jour la géométrie
-              riding_fixed$geometry[j_global] <- tmp_intersection
-            }, error = function(e) {
-              message("Erreur avec la circonscription ", j_global, ": ", e$message)
-            })
-          }
-        }
-        
-        # Libérer la mémoire régulièrement
-        if (p %% 3 == 0) gc()
+      # Si aucune intersection n'est trouvée, passer à la suivante
+      if (length(intersections) == 0) {
+        message("Aucune intersection trouvée pour la circonscription ", i)
+        next
       }
       
-      # Libérer la mémoire après chaque lot
-      gc()
+      # Calculer les aires d'intersection
+      intersection_areas <- st_area(intersections)
+      
+      # Trouver l'index de l'intersection avec la plus grande aire
+      max_area_idx <- which.max(intersection_areas)
+      
+      # Utiliser cette intersection comme géométrie alignée
+      tryCatch({
+        riding_aligned$geometry[i] <- intersections[max_area_idx]
+      }, error = function(e) {
+        message("Erreur avec la circonscription ", i, ": ", e$message)
+      })
     }
+    
+    # Libérer la mémoire après chaque lot
+    gc()
   }
-
-  # 6. Validation
-  message("Validation des associations ID/noms/géométries...")
   
-  # S'assurer que toutes les géométries sont valides
-  riding_fixed <- st_make_valid(riding_fixed)
+  # 6. Validation finale
+  message("Validation des géométries finales...")
+  riding_aligned <- st_make_valid(riding_aligned)
   
-  # 7. Sauvegarder les résultats
+  # 7. Sauvegarde des résultats
   message("Sauvegarde des résultats...")
-  spatial_canada_2022_electoral_ridings_aligned <- riding_fixed
+  spatial_canada_2022_electoral_ridings_aligned <- riding_aligned
   
   save(spatial_canada_2022_electoral_ridings_aligned, 
        file = "data/spatial_canada_2022_electoral_ridings_aligned.rda", 
        compress = "bzip2")
   
-  # 8. Création d'une visualisation simplifiée pour ne pas consommer trop de mémoire
+  # Créer une sauvegarde
+  file.copy("data/spatial_canada_2022_electoral_ridings_aligned.rda", 
+            paste0("data/spatial_canada_2022_electoral_ridings_aligned.rda.backup-", 
+                   format(Sys.time(), "%Y%m%d%H%M%S")),
+            overwrite = TRUE)
+  
+  # 8. Visualisation de vérification
   message("Création d'une visualisation...")
   
-  # Échantillon réduit pour la visualisation
+  # Échantillonnage pour la visualisation (plus d'échantillons mais toujours limité)
   set.seed(123)
+  sample_size <- min(10, nrow(riding_aligned))
+  sample_idx <- sample(1:nrow(riding_aligned), sample_size)
   
-  # Utiliser moins de circonscriptions pour l'aperçu
-  sample_idx <- sample(1:nrow(riding_fixed), 5)
-  
-  # Utiliser une version simplifiée des provinces pour l'affichage
-  provinces_viz <- st_simplify(provinces_simple, preserveTopology = TRUE, dTolerance = 1000)
-  
-  # Créer la carte avec moins d'éléments
+  # Visualisation
   map <- ggplot() +
-    geom_sf(data = provinces_viz, fill = "white", color = "darkgray") +
-    geom_sf(data = riding_fixed[sample_idx,], fill = NA, color = "red") +
+    geom_sf(data = provinces_simple, fill = "white", color = "darkgray", size = 0.5) +
+    geom_sf(data = riding_aligned[sample_idx,], fill = NA, color = "red", size = 0.3) +
     theme_minimal() +
     labs(title = "Circonscriptions électorales alignées avec les provinces",
-         caption = "5 circonscriptions sélectionnées aléatoirement")
+         subtitle = paste(sample_size, "circonscriptions aléatoires affichées"),
+         caption = format(Sys.time(), "%Y-%m-%d"))
   
-  # Sauvegarder la carte
-  ggsave("data-raw/data/aligned_ridings_preview.png", map, width = 10, height = 8)
+  # Création du dossier si nécessaire
+  if (!dir.exists("data-raw/data")) {
+    dir.create("data-raw/data", recursive = TRUE)
+  }
+  
+  # Sauvegarde de la carte
+  ggsave("data-raw/data/aligned_ridings_preview.png", map, width = 10, height = 8, dpi = 100)
   
   message("Processus terminé! Données sauvegardées.")
-  return(spatial_canada_2022_electoral_ridings_aligned)
+  return(invisible(spatial_canada_2022_electoral_ridings_aligned))
 }
+
+# Exécution de la fonction (ligne à décommenter pour exécuter)
+align_ridings_to_provinces()
