@@ -1,2 +1,7 @@
 ^cartessn\.Rproj$
 ^\.Rproj\.user$
+^data-raw$
+^\.github$
+^README\.md$
+^install_package\.R$
+^install_log\.txt$
