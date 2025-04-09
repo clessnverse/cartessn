@@ -11,22 +11,22 @@ if (!requireNamespace("utils", quietly = TRUE)) {
 library(pkgbuild)
 library(utils)
 
-# Obtenir le répertoire du script
-script_dir <- dirname(parent.frame(2)$ofile)
-if (script_dir == ".") {
-  script_dir <- getwd()
-}
-
-# Remonter au répertoire du package (si le script est dans inst/installer)
-package_dir <- dirname(dirname(script_dir))
-if (basename(dirname(script_dir)) != "inst") {
-  package_dir <- script_dir
+# Déterminer le répertoire du package
+package_dir <- getwd()
+if (basename(package_dir) != "cartessn") {
+  if (dirname(package_dir) == "installer" && basename(dirname(dirname(package_dir))) == "cartessn") {
+    package_dir <- dirname(dirname(package_dir))  # Si dans inst/installer
+  } else if (basename(dirname(package_dir)) == "cartessn") {
+    package_dir <- dirname(package_dir)  # Si dans un sous-répertoire
+  }
 }
 
 # Vérifier que nous sommes dans le répertoire d'un package R
 if (!file.exists(file.path(package_dir, "DESCRIPTION"))) {
-  stop("Impossible de trouver le fichier DESCRIPTION. Assurez-vous d'être dans le répertoire du package.")
+  stop("Impossible de trouver le fichier DESCRIPTION. Exécutez ce script depuis le répertoire du package.")
 }
+
+cat("Répertoire du package:", package_dir, "\n")
 
 # Définir le répertoire de sortie pour l'archive
 output_dir <- file.path(package_dir, "dist")
@@ -35,14 +35,14 @@ if (!dir.exists(output_dir)) {
 }
 
 # Créer l'archive du package
-message("Création de l'archive du package...")
+cat("Création de l'archive du package...\n")
 pkg_file <- pkgbuild::build(package_dir, dest_path = output_dir)
 
 # Vérifier que l'archive a été créée
 if (file.exists(pkg_file)) {
-  message("Archive créée avec succès: ", pkg_file)
-  message("\nPour installer le package à partir de cette archive, utilisez:")
-  message("install.packages('", pkg_file, "', repos = NULL, type = 'source')")
+  cat("Archive créée avec succès:", pkg_file, "\n")
+  cat("\nPour installer le package à partir de cette archive, utilisez:\n")
+  cat("install.packages('", pkg_file, "', repos = NULL, type = 'source')\n", sep="")
   
   # Créer un script d'installation
   install_script <- file.path(output_dir, "install_local.R")
@@ -50,7 +50,7 @@ if (file.exists(pkg_file)) {
             "install.packages('", pkg_file, "', repos = NULL, type = 'source')\n"),
       file = install_script)
   
-  message("\nUn script d'installation a été créé: ", install_script)
+  cat("\nUn script d'installation a été créé:", install_script, "\n")
 } else {
-  message("Échec de la création de l'archive.")
+  cat("Échec de la création de l'archive.\n")
 }
