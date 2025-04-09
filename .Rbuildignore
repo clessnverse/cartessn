@@ -5,3 +5,5 @@
 ^README\.md$
 ^install_package\.R$
 ^install_log\.txt$
+^dist$
+^\.RData$
