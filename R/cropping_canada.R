@@ -27,7 +27,7 @@ city_mapping_canada_2025 <- list(
       "24010", # Bellechasse—Les Etchemins—Lévis
       "24040"  # Lévis—Lotbinière
     ),
-    "coordinates" = c("xmin" = -71.6, "xmax" = -71.1, "ymin" = 46.7, "ymax" = 47)
+    "coordinates" = c("xmin" = -71.63, "xmax" = -71.06, "ymin" = 46.67, "ymax" = 47.03)
   ),
   "montreal" = list(
     "ridings" = c(
@@ -67,7 +67,7 @@ city_mapping_canada_2025 <- list(
       "24032", # La Prairie—Atateken
       "24049"  # Mont-Saint-Bruno—L'Acadie
     ),
-    "coordinates" = c("xmin" = -74.05, "xmax" = -73.45, "ymin" = 45.40, "ymax" = 45.70)
+    "coordinates" = c("xmin" = -74.03, "xmax" = -73.47, "ymin" = 45.38, "ymax" = 45.72)
   ),
   "toronto" = list(
     "ridings" = c(
@@ -128,7 +128,7 @@ city_mapping_canada_2025 <- list(
       "35121", # York—Durham
       "35025"  # Dufferin—Caledon
     ),
-    "coordinates" = c("xmin" = -79.67, "xmax" = -79.1, "ymin" = 43.55, "ymax" = 43.9)
+    "coordinates" = c("xmin" = -79.67, "xmax" = -79.10, "ymin" = 43.55, "ymax" = 43.90)
   ),
   "ottawa_gatineau" = list(
     "ridings" = c(
@@ -146,7 +146,7 @@ city_mapping_canada_2025 <- list(
       "24057", # Pontiac—Kitigan Zibi
       "24005"  # Argenteuil—La Petite-Nation
     ),
-    "coordinates" = c("xmin" = -76.0, "xmax" = -75.5, "ymin" = 45.2, "ymax" = 45.5)
+    "coordinates" = c("xmin" = -76.03, "xmax" = -75.47, "ymin" = 45.17, "ymax" = 45.53)
   ),
   "vancouver" = list(
     "ridings" = c(
@@ -178,7 +178,7 @@ city_mapping_canada_2025 <- list(
       "59042", # Victoria
       "59043"  # West Vancouver—Sunshine Coast—Sea to Sky Country
     ),
-    "coordinates" = c("xmin" = -123.5, "xmax" = -122.1, "ymin" = 48.8, "ymax" = 49.6)
+    "coordinates" = c("xmin" = -123.09, "xmax" = -122.51, "ymin" = 49.03, "ymax" = 49.38)
   ),
   "winnipeg" = list(
     "ridings" = c(
@@ -197,7 +197,7 @@ city_mapping_canada_2025 <- list(
       "46007", # Mont-Riding
       "46009"  # Selkirk—Interlake—Eastman
     ),
-    "coordinates" = c("xmin" = -97.5, "xmax" = -96.5, "ymin" = 49.6, "ymax" = 50.2)
+    "coordinates" = c("xmin" = -97.28, "xmax" = -96.72, "ymin" = 49.73, "ymax" = 50.08)
   ),
   "kitchener_waterloo" = list(
     "ridings" = c(
@@ -216,7 +216,7 @@ city_mapping_canada_2025 <- list(
       "35032", # Flamborough—Glanbrook—Brant-Nord
       "35039"  # Hamilton-Ouest—Ancaster—Dundas
     ),
-    "coordinates" = c("xmin" = -80.8, "xmax" = -80.2, "ymin" = 43.3, "ymax" = 43.7)
+    "coordinates" = c("xmin" = -80.78, "xmax" = -80.22, "ymin" = 43.33, "ymax" = 43.67)
   ),
   "london" = list(
     "ridings" = c(
@@ -226,10 +226,9 @@ city_mapping_canada_2025 <- list(
       "35027", # Elgin—St. Thomas—London-Sud
       "35059"  # Middlesex—London
     ),
-    "coordinates" = c("xmin" = -81.46, "xmax" = -81.07, "ymin" = 42.8, "ymax" = 43.1)
+    "coordinates" = c("xmin" = -81.55, "xmax" = -80.98, "ymin" = 42.78, "ymax" = 43.13)
   )
 )
-
 
 #' Crop an sf object to a specified city/region
 #'
