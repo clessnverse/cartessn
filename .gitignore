@@ -1,8 +1,16 @@
+# R standard files to ignore
 .Rproj.user
 .Rhistory
-.Rdata
-.httr-oauth
-.DS_Store
-.quarto
-.shp
-data-raw/data/
+.RData
+.Ruserdata
+*.Rproj
+# Files with encoding issues
+data-raw/data/canada_2022_electoral_ridings/shapefiles/*/*.docx
+data-raw/data/canada_2022_electoral_ridings/shapefiles/*/*/*.docx
+data-raw/data/canada_2022_electoral_ridings/shapefiles/*/METADATA/*écoupa*
+data-raw/data/canada_2022_electoral_ridings/shapefiles/*/*/METADATA/*écoupa*
+# Temporary files
+temp-build/
+# Misc
+*.bak
+*.log

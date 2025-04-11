@@ -1,0 +1,30 @@
+Package: cartessn
+Title: Outils de Cartographie Électorale Canadienne
+Version: 0.1.0
+Authors@R: 
+    person("CLESSN", , , "clessn@ulaval.ca", role = c("aut", "cre"))
+Description: Un ensemble d'outils pour manipuler et visualiser les données 
+    cartographiques des circonscriptions électorales canadiennes. Inclut des 
+    fonctions pour extraire, recadrer et représenter visuellement les données 
+    électorales, ainsi que des ensembles de données spatiales pour les 
+    circonscriptions électorales fédérales de 2013 et 2022.
+License: MIT + file LICENSE
+Imports:
+    dplyr,
+    ggplot2,
+    patchwork,
+    rlang,
+    sf
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+URL: https://github.com/clessnverse/cartessn
+BugReports: https://github.com/clessnverse/cartessn/issues
+LazyData: TRUE
+Depends: 
+    R (>= 4.0.0)
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

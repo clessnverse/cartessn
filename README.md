@@ -6,12 +6,6 @@ Ce package fournit des outils pour manipuler et visualiser les données cartogra
 
 ## Installation
 
-### Installation depuis CRAN (à venir)
-
-```r
-install.packages("cartessn")
-```
-
 ### Installation depuis GitHub
 
 ```r

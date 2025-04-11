@@ -1,9 +1,11 @@
-^cartessn\.Rproj$
+^.*\.Rproj$
 ^\.Rproj\.user$
 ^data-raw$
+^README\.Rmd$
+^LICENSE\.md$
 ^\.github$
-^README\.md$
+^CRAN-SUBMISSION$
+^inst/installer$
+^dist$
 ^install_package\.R$
 ^install_log\.txt$
-^dist$
-^\.RData$
