@@ -6,6 +6,12 @@ Ce package fournit des outils pour manipuler et visualiser les données cartogra
 
 ## Installation
 
+### Installation depuis CRAN (à venir)
+
+```r
+install.packages("cartessn")
+```
+
 ### Installation depuis GitHub
 
 ```r
@@ -25,6 +31,17 @@ remotes::install_github("clessnverse/cartessn")
 # Option 5: Installation locale si vous avez déjà cloné le dépôt
 # Dans le répertoire du package
 devtools::install(".")
+```
+
+### Installation locale depuis une archive précompilée
+
+Si les options ci-dessus échouent, vous pouvez télécharger et installer une archive précompilée:
+
+1. Téléchargez la dernière version depuis les [releases GitHub](https://github.com/clessnverse/cartessn/releases)
+2. Installez avec:
+
+```r
+install.packages("chemin/vers/cartessn_x.y.z.tar.gz", repos = NULL, type = "source")
 ```
 
 ### Dépendances
@@ -102,7 +119,7 @@ Si vous rencontrez des problèmes lors de l'installation depuis GitHub, essayez:
 
 ## Contribution
 
-Les contributions sont les bienvenues! N'hésitez pas à ouvrir une issue ou à proposer une pull request sur [GitHub](https://github.com/clessnverse/cartessn).
+Les contributions sont les bienvenues\! N'hésitez pas à ouvrir une issue ou à proposer une pull request sur [GitHub](https://github.com/clessnverse/cartessn).
 
 ## Licence
 
