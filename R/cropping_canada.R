@@ -14,19 +14,19 @@
 #' cartessn::city_mapping_canada_2025$quebec_city$coordinates
 #'
 #' @export
-city_mapping_canada_2025 <- list(
+city_mapping <- list(
   "quebec_city" = list(
     "ridings" = c(
-    "24016", # Charlesbourg—Haute-Saint-Charles
-    "24042", # Louis-Hébert
-    "24059", # Québec Centre
-    "24043", # Louis-Saint-Laurent—Akiawenhrahk
-    "24008", # Beauport—Limoilou
-    "24051", # Montmorency—Charlevoix
-    "24058", # Portneuf—Jacques-Cartier
-    "24010", # Bellechasse—Les Etchemins—Lévis
-    "24039" # Lévis—Lotbinière
-  ),
+      "24016", # Charlesbourg—Haute-Saint-Charles
+      "24043", # Louis-Hébert
+      "24059", # Québec-Centre
+      "24044", # Louis-Saint-Laurent—Akiawenhrahk
+      "24008", # Beauport—Limoilou
+      "24051", # Montmorency—Charlevoix
+      "24058", # Portneuf—Jacques-Cartier
+      "24010", # Bellechasse—Les Etchemins—Lévis
+      "24040"  # Lévis—Lotbinière
+    ),
     "coordinates" = c("xmin" = -71.6, "xmax" = -71.1, "ymin" = 46.7, "ymax" = 47)
   ),
   "montreal" = list(
@@ -36,208 +36,198 @@ city_mapping_canada_2025 <- list(
       "24013", # Bourassa
       "24015", # Brossard—Saint-Lambert
       "24017", # Châteauguay—Les Jardins-de-Napierville
-      "24021", # Dorval—Lachine
-      "24025", # Hochelaga
-      "24026", # Honoré-Mercier
-      "24030", # La Pointe-de-l'Île
-      "24033", # Lac-Saint-Louis
-      "24034", # LaSalle—Verdun
-      "24036", # Laurier—Sainte-Marie
-      "24037", # Laval—Les Îles
-      "24040", # Longueuil—Charles-LeMoyne
-      "24041", # Longueuil—Saint-Hubert
-      "24044", # Marc-Aurèle-Fortin
-      "24046", # Mirabel
-      "24047", # Mount Royal
-      "24048", # Montarville
+      "24022", # Dorval—Lachine—LaSalle
+      "24026", # Hochelaga—Rosemont-Est
+      "24027", # Honoré-Mercier
+      "24031", # La Pointe-de-l'Île
+      "24034", # Lac-Saint-Louis
+      "24035", # LaSalle—Émard—Verdun
+      "24037", # Laurier—Sainte-Marie
+      "24038", # Laval—Les Îles
+      "24041", # Longueuil—Charles-LeMoyne
+      "24042", # Longueuil—Saint-Hubert
+      "24045", # Marc-Aurèle-Fortin
+      "24047", # Mirabel
+      "24048", # Mont-Royal
       "24052", # Notre-Dame-de-Grâce—Westmount
       "24053", # Outremont
       "24054", # Papineau
       "24055", # Pierre-Boucher—Les Patriotes—Verchères
       "24056", # Pierrefonds—Dollard
+      "24060", # Repentigny
       "24063", # Rivière-des-Mille-Îles
-      "24064", # Rivière-du-Nord
       "24065", # Rosemont—La Petite-Patrie
       "24068", # Saint-Laurent
       "24069", # Saint-Léonard—Saint-Michel
+      "24073", # Terrebonne
       "24074", # Thérèse-De Blainville
       "24076", # Vaudreuil
       "24077", # Ville-Marie—Le Sud-Ouest—Île-des-Soeurs
-      "24073", # Terrebonne
-      "24060", # Repentigny
-      "24031", # La prairie
-      "24078"  # Vimy
+      "24078", # Vimy
+      "24032", # La Prairie—Atateken
+      "24049"  # Mont-Saint-Bruno—L'Acadie
     ),
     "coordinates" = c("xmin" = -74.05, "xmax" = -73.45, "ymin" = 45.40, "ymax" = 45.70)
   ),
-  "kitchener_waterloo" = list(
-   "ridings" = c(
-    "35048", # Kitchener Centre
-    "35049", # Kitchener—Conestoga
-    "35050", # Kitchener South—Hespeler
-    "35114", # Waterloo
-    "35019", # Cambridge
-    "35115", # Wellington—Halton Hills North
-    "35033", # Guelph
-    "35084", # Oxford
-    "35086", # Perth—Wellington
-    "35015", # Brantford—Brant South—Six Nations
-    "35061", # Milton East—Halton Hills South
-    "35018", # Burlington North—Milton West
-    "35032", # Flamborough—Glanbrook—Brant North
-    "35039"  # Hamilton West—Ancaster—Dundas
-   ),
-   "coordinates" = c("xmin" = -80.8, "xmax" = -80.2, "ymin" = 43.3, "ymax" = 43.7)
- ),
- "london" = list(
+  "toronto" = list(
     "ridings" = c(
-      "35053", # London Centre
+      "35105", # Taiaiako'n—Parkdale—High Park
+      "35109", # Toronto-Centre
+      "35110", # Toronto—Danforth
+      "35111", # Toronto—St. Paul's
+      "35112", # University—Rosedale
+      "35117", # Willowdale
+      "35120", # York-Centre
+      "35122", # York-Sud—Weston—Etobicoke
+      "35022", # Davenport
+      "35023", # Don Valley-Nord
+      "35024", # Don Valley-Ouest
+      "35026", # Eglinton—Lawrence
+      "35029", # Etobicoke-Centre
+      "35030", # Etobicoke—Lakeshore
+      "35031", # Etobicoke-Nord
+      "35041", # Humber River—Black Creek
+      "35047", # King—Vaughan
+      "35056", # Markham—Stouffville
+      "35057", # Markham—Thornhill
+      "35058", # Markham—Unionville
+      "35061", # Mississauga-Centre
+      "35062", # Mississauga-Est—Cooksville
+      "35063", # Mississauga—Erin Mills
+      "35064", # Mississauga—Lakeshore
+      "35065", # Mississauga—Malton
+      "35066", # Mississauga—Streetsville
+      "35075", # Oakville-Est
+      "35076", # Oakville-Ouest
+      "35089", # Richmond Hill-Sud
+      "35092", # Scarborough—Agincourt
+      "35093", # Scarborough-Centre—Don Valley-Est
+      "35094", # Scarborough—Guildwood—Rouge Park
+      "35095", # Scarborough-Nord
+      "35096", # Scarborough-Sud-Ouest
+      "35097", # Scarborough—Woburn
+      "35100", # Spadina—Harbourfront
+      "35106", # Thornhill
+      "35113", # Vaughan—Woodbridge
+      "35001", # Ajax
+      "35003", # Aurora—Oak Ridges—Richmond Hill
+      "35007", # Beaches—East York
+      "35008", # Bowmanville—Oshawa-Nord
+      "35009", # Brampton-Centre
+      "35010", # Brampton—Chinguacousy Park
+      "35011", # Brampton-Est
+      "35012", # Brampton-Nord—Caledon
+      "35013", # Brampton-Sud
+      "35014", # Brampton-Ouest
+      "35017", # Burlington
+      "35018", # Burlington-Nord—Milton-Ouest
+      "35068", # Newmarket—Aurora
+      "35069", # New Tecumseth—Gwillimbury
+      "35087", # Pickering—Brooklin
+      "35116", # Whitby
+      "35121", # York—Durham
+      "35025"  # Dufferin—Caledon
+    ),
+    "coordinates" = c("xmin" = -79.67, "xmax" = -79.1, "ymin" = 43.55, "ymax" = 43.9)
+  ),
+  "ottawa_gatineau" = list(
+    "ridings" = c(
+      "35020", # Carleton
+      "35043", # Kanata
+      "35067", # Nepean
+      "35077", # Orléans
+      "35079", # Ottawa-Centre
+      "35080", # Ottawa-Sud
+      "35081", # Ottawa—Vanier—Gloucester
+      "35082", # Ottawa-Ouest—Nepean
+      "35088", # Prescott—Russell—Cumberland
+      "24025", # Gatineau
+      "24028", # Hull—Aylmer
+      "24057", # Pontiac—Kitigan Zibi
+      "24005"  # Argenteuil—La Petite-Nation
+    ),
+    "coordinates" = c("xmin" = -76.0, "xmax" = -75.5, "ymin" = 45.2, "ymax" = 45.5)
+  ),
+  "vancouver" = list(
+    "ridings" = c(
+      "59001", # Abbotsford—Langley-Sud
+      "59002", # Burnaby Central
+      "59003", # Burnaby-Nord—Seymour
+      "59006", # Cloverdale—Langley City
+      "59008", # Coquitlam—Port Coquitlam
+      "59011", # Delta
+      "59013", # Fleetwood—Port Kells
+      "59017", # Langley Township—Fraser Heights
+      "59018", # Mission—Matsqui—Abbotsford
+      "59019", # Nanaimo—Ladysmith
+      "59020", # New Westminster—Burnaby—Maillardville
+      "59022", # North Vancouver—Capilano
+      "59024", # Pitt Meadows—Maple Ridge
+      "59025", # Port Moody—Coquitlam
+      "59027", # Richmond-Centre—Marpole
+      "59028", # Richmond-Est—Steveston
+      "59032", # Surrey-Sud—White Rock
+      "59033", # Surrey-Centre
+      "59034", # Surrey Newton
+      "59035", # Vancouver-Centre
+      "59036", # Vancouver-Est
+      "59037", # Vancouver Fraserview—Burnaby-Sud
+      "59038", # Vancouver Granville
+      "59039", # Vancouver Kingsway
+      "59040", # Vancouver Quadra
+      "59042", # Victoria
+      "59043"  # West Vancouver—Sunshine Coast—Sea to Sky Country
+    ),
+    "coordinates" = c("xmin" = -123.5, "xmax" = -122.1, "ymin" = 48.8, "ymax" = 49.6)
+  ),
+  "winnipeg" = list(
+    "ridings" = c(
+      "46003", # Elmwood—Transcona
+      "46004", # Kildonan—St. Paul
+      "46008", # Saint-Boniface—Saint-Vital
+      "46010", # Winnipeg-Centre
+      "46011", # Winnipeg-Nord
+      "46012", # Winnipeg-Sud
+      "46013", # Winnipeg-Centre-Sud
+      "46014", # Winnipeg-Ouest
+      "46001", # Brandon—Souris
+      "46002", # Churchill—Keewatinook Aski
+      "46005", # Portage—Lisgar
+      "46006", # Provencher
+      "46007", # Mont-Riding
+      "46009"  # Selkirk—Interlake—Eastman
+    ),
+    "coordinates" = c("xmin" = -97.5, "xmax" = -96.5, "ymin" = 49.6, "ymax" = 50.2)
+  ),
+  "kitchener_waterloo" = list(
+    "ridings" = c(
+      "35048", # Kitchener-Centre
+      "35049", # Kitchener—Conestoga
+      "35050", # Kitchener-Sud—Hespeler
+      "35114", # Waterloo
+      "35019", # Cambridge
+      "35115", # Wellington—Halton Hills-Nord
+      "35033", # Guelph
+      "35083", # Oxford
+      "35085", # Perth—Wellington
+      "35015", # Brantford—Brant-Sud—Six Nations
+      "35060", # Milton-Est—Halton Hills-Sud
+      "35018", # Burlington-Nord—Milton-Ouest
+      "35032", # Flamborough—Glanbrook—Brant-Nord
+      "35039"  # Hamilton-Ouest—Ancaster—Dundas
+    ),
+    "coordinates" = c("xmin" = -80.8, "xmax" = -80.2, "ymin" = 43.3, "ymax" = 43.7)
+  ),
+  "london" = list(
+    "ridings" = c(
+      "35053", # London-Centre
       "35054", # London—Fanshawe
-      "35055", # London West
-      "35027", # Elgin—St. Thomas—London South
-      "35060"  # Middlesex—London
+      "35055", # London-Ouest
+      "35027", # Elgin—St. Thomas—London-Sud
+      "35059"  # Middlesex—London
     ),
     "coordinates" = c("xmin" = -81.46, "xmax" = -81.07, "ymin" = 42.8, "ymax" = 43.1)
-  ),
-  "toronto" = list(
-  "ridings" = c(
-    # Toronto area ridings
-    "35105", # Taiaiako'n—Parkdale—High Park
-    "35108", # Toronto Centre
-    "35109", # Toronto—Danforth
-    "35110", # Toronto—St. Paul's
-    "35111", # University—Rosedale
-    "35112", # Vaughan—Thornhill
-    "35113", # Vaughan—Woodbridge
-    "35117", # Willowdale
-    "35120", # York Centre
-    "35122", # York South—Weston—Etobicoke
-    "35022", # Davenport
-    "35023", # Don Valley North
-    "35024", # Don Valley South
-    "35026", # Eglinton—Lawrence
-    "35029", # Etobicoke Centre
-    "35030", # Etobicoke—Lakeshore
-    "35031", # Etobicoke North
-    "35041", # Humber River—Black Creek
-    "35047", # King—Vaughan
-    "35057", # Markham—Stouffville
-    "35058", # Markham—Thornhill
-    "35059", # Markham—Unionville
-    "35062", # Mississauga Centre
-    "35063", # Mississauga East—Cooksville
-    "35064", # Mississauga—Erin Mills
-    "35065", # Mississauga—Lakeshore
-    "35066", # Mississauga—Malton
-    "35067", # Mississauga—Streetsville
-    "35076", # Oakville East
-    "35077", # Oakville West
-    "35090", # Richmond Hill South
-    "35093", # Scarborough—Agincourt
-    "35094", # Scarborough Centre—Don Valley East
-    "35095", # Scarborough—Guildwood—Rouge Park
-    "35096", # Scarborough North
-    "35097", # Scarborough Southwest
-    "35098", # Scarborough—Woburn
-    "35101", # Spadina—Harbourfront
-    
-    # Additional surrounding ridings
-    "35001", # Ajax
-    "35003", # Aurora—Oak Ridges—Richmond Hill
-    "35007", # Beaches—East York
-    "35008", # Bowmanville—Oshawa North
-    "35009", # Brampton Centre
-    "35010", # Brampton—Chinguacousy Park
-    "35011", # Brampton East
-    "35012", # Brampton North—Caledon
-    "35013", # Brampton South
-    "35014", # Brampton West
-    "35017", # Burlington
-    "35018", # Burlington North—Milton West
-    "35069", # Newmarket—Aurora
-    "35070", # New Tecumseth—Gwillimbury
-    "35079", # Oshawa
-    "35088", # Pickering—Brooklin
-    "35116", # Whitby
-    "35121"  # York—Durham
-  ),
-  "coordinates" = c("xmin" = -79.67, "xmax" = -79.1, "ymin" = 43.55, "ymax" = 43.9)
-),
-"ottawa_gatineau" = list(
-  "ridings" = c(
-    # Ottawa (Ontario)
-    "35020", # Carleton
-    "35043", # Kanata
-    "35068", # Nepean
-    "35078", # Orléans
-    "35080", # Ottawa Centre
-    "35081", # Ottawa South
-    "35082", # Ottawa—Vanier—Gloucester
-    "35083", # Ottawa West—Nepean
-    "35089", # Prescott—Russell—Cumberland
-    
-    # Gatineau (Québec)
-    "24024", # Gatineau
-    "24027", # Hull—Aylmer
-    "24057", # Pontiac—Kitigan Zibi
-    "24005"  # Argenteuil—La Petite-Nation
-  ),
-  "coordinates" = c("xmin" = -76.0, "xmax" = -75.5, "ymin" = 45.2, "ymax" = 45.5)
-),
-"vancouver" = list(
-  "ridings" = c(
-    "59001", # Abbotsford—South Langley
-    "59002", # Burnaby Central
-    "59003", # Burnaby North—Seymour
-    "59004", # Capilano—North Vancouver
-    "59006", # Chilliwack—Hope
-    "59007", # Cloverdale—Langley City
-    "59009", # Coquitlam—Port Coquitlam
-    "59012", # Delta
-    "59013", # Esquimalt—Saanich—Sooke
-    "59014", # Fleetwood—Port Kells
-    "59015", # Howe Sound—West Vancouver
-    "59019", # Langley Township
-    "59020", # Mission—Matsqui—Abbotsford
-    "59021", # Nanaimo—Ladysmith
-    "59022", # New Westminster—Burnaby—Maillardville
-    "59025", # Pitt Meadows—Maple Ridge
-    "59026", # Port Moody—Coquitlam
-    "59028", # Richmond Centre—Marpole
-    "59029", # Richmond East—Steveston
-    "59030", # Saanich—Gulf Islands
-    "59033", # South Surrey—White Rock
-    "59034", # Surrey Centre
-    "59035", # Surrey Newton
-    "59036", # Vancouver Arbutus
-    "59037", # Vancouver Centre
-    "59038", # Vancouver East
-    "59039", # Vancouver Fraserview—South Burnaby
-    "59040", # Vancouver Kingsway
-    "59041", # Vancouver West Broadway
-    "59043"  # Victoria
-  ),
-  "coordinates" = c("xmin" = -123.5, "xmax" = -122.1, "ymin" = 48.8, "ymax" = 49.6)
-),
-"winnipeg" = list(
-  "ridings" = c(
-    "46001", # Brandon—Souris
-    "46002", # Churchill—Keewatinook Aski
-    "46003", # Elmwood—Transcona
-    "46004", # Kildonan—St. Paul
-    "46005", # Portage—Lisgar
-    "46006", # Provencher
-    "46007", # Riding Mountain
-    "46008", # St. Boniface—St. Vital
-    "46009", # Selkirk—Interlake—Eastman
-    "46010", # Winnipeg Centre
-    "46011", # Winnipeg North
-    "46012", # Winnipeg South
-    "46013", # Winnipeg South Centre
-    "46014"  # Winnipeg West
-  ),
-  "coordinates" = c("xmin" = -97.5, "xmax" = -96.5, "ymin" = 49.6, "ymax" = 50.2)
-)
+  )
 )
 
 
