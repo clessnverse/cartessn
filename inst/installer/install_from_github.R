@@ -42,7 +42,14 @@ try_install <- function(method = NULL) {
     cat("\nEssai avec la méthode par défaut\n")
   }
   
+  # S'assurer que devtools est disponible
+  if (!requireNamespace("devtools", quietly = TRUE)) {
+    cat("Installation du package 'devtools'...\n")
+    install.packages("devtools")
+  }
+  
   tryCatch({
+    # Essayer avec remotes d'abord
     remotes::install_github("clessnverse/cartessn", 
                            dependencies = TRUE,
                            force = TRUE,
@@ -50,8 +57,20 @@ try_install <- function(method = NULL) {
                            quiet = FALSE)
     return(TRUE)
   }, error = function(e) {
-    cat("Échec:", conditionMessage(e), "\n")
-    return(FALSE)
+    cat("Échec avec remotes:", conditionMessage(e), "\n")
+    
+    # Si remotes échoue, essayer avec devtools
+    tryCatch({
+      cat("Tentative avec devtools...\n")
+      devtools::install_github("clessnverse/cartessn",
+                               dependencies = TRUE,
+                               force = TRUE,
+                               upgrade = "never")
+      return(TRUE)
+    }, error = function(e2) {
+      cat("Échec avec devtools:", conditionMessage(e2), "\n")
+      return(FALSE)
+    })
   })
 }
 

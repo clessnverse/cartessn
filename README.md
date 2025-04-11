@@ -15,14 +15,20 @@ install.packages("cartessn")
 ### Installation depuis GitHub
 
 ```r
-# Option 1: Installation standard
+# Option 1: Installation avec script robuste
+source("https://raw.githubusercontent.com/clessnverse/cartessn/main/inst/installer/install_from_github.R")
+
+# Option 2: Installation standard
 remotes::install_github("clessnverse/cartessn")
 
-# Option 2: Si l'option 1 échoue, essayez avec un autre download.file.method
-options(download.file.method = "libcurl")
+# Option 3: Installation avec devtools
+devtools::install_github("clessnverse/cartessn", dependencies = TRUE)
+
+# Option 4: Installation avec méthode de téléchargement spécifique
+options(download.file.method = "libcurl")  # Essayez aussi "wget", "curl" ou "internal"
 remotes::install_github("clessnverse/cartessn")
 
-# Option 3: Installation locale si vous avez déjà cloné le dépôt
+# Option 5: Installation locale si vous avez déjà cloné le dépôt
 # Dans le répertoire du package
 devtools::install(".")
 ```

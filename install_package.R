@@ -1,10 +1,7 @@
 # Installation locale du package cartessn
 # Script résolvant les problèmes de connectivité à GitHub
 
-# Configuration initiale
-lib_path <- "~/R/library"
-dir.create(lib_path, showWarnings = FALSE, recursive = TRUE)
-
+# Configuration initiale - utilisation du chemin de librairie par défaut
 # Augmenter le timeout et ajuster les paramètres réseau
 options(timeout = 600)  # 10 minutes
 options(repos = c(CRAN = "https://cloud.r-project.org"))
@@ -14,7 +11,7 @@ needed_packages <- c("devtools", "remotes", "sf", "dplyr", "ggplot2", "patchwork
 for (pkg in needed_packages) {
   if (!requireNamespace(pkg, quietly = TRUE)) {
     tryCatch({
-      install.packages(pkg, lib = lib_path)
+      install.packages(pkg)
     }, error = function(e) {
       message("Échec d'installation de ", pkg, ": ", e$message)
     })
@@ -24,7 +21,7 @@ for (pkg in needed_packages) {
 # Charger les librairies si disponibles
 for (pkg in c("devtools", "remotes")) {
   if (requireNamespace(pkg, quietly = TRUE)) {
-    library(pkg, character.only = TRUE, lib.loc = lib_path)
+    library(pkg, character.only = TRUE)
   } else {
     message("ATTENTION: Package ", pkg, " non disponible. L'installation pourrait échouer.")
   }
@@ -54,13 +51,17 @@ tryCatch({
   }
   
   # Utiliser devtools comme alternative
-  devtools::document()  # Générer/mettre à jour la documentation
-  devtools::install(".", 
-                   dependencies = TRUE, 
-                   upgrade = "never",
-                   force = TRUE, 
-                   build = TRUE,
-                   build_vignettes = FALSE)
+  if (file.exists("NAMESPACE") && file.exists("DESCRIPTION")) {
+    devtools::install(".", 
+                     dependencies = TRUE, 
+                     upgrade = "never",
+                     force = TRUE, 
+                     build = TRUE,
+                     build_vignettes = FALSE)
+  } else {
+    message("Package incomplet - NAMESPACE ou DESCRIPTION manquant")
+    return(FALSE)
+  }
   message("Installation locale réussie!")
   quit(save = "no", status = 0)
 }, error = function(e) {
