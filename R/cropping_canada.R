@@ -27,7 +27,7 @@ city_mapping_canada_2025 <- list(
       "24010", # Bellechasse—Les Etchemins—Lévis
       "24040"  # Lévis—Lotbinière
     ),
-    "coordinates" = c("xmin" = -71.63, "xmax" = -71.06, "ymin" = 46.67, "ymax" = 47.03)
+    "coordinates" = c("xmin" = -71.6, "xmax" = -71.1, "ymin" = 46.7, "ymax" = 47)
   ),
   "montreal" = list(
     "ridings" = c(
@@ -128,7 +128,7 @@ city_mapping_canada_2025 <- list(
       "35121", # York—Durham
       "35025"  # Dufferin—Caledon
     ),
-    "coordinates" = c("xmin" = -79.67, "xmax" = -79.10, "ymin" = 43.55, "ymax" = 43.90)
+    "coordinates" = c("xmin" = -79.67, "xmax" = -79.1, "ymin" = 43.55, "ymax" = 43.9)
   ),
   "ottawa_gatineau" = list(
     "ridings" = c(
@@ -146,7 +146,7 @@ city_mapping_canada_2025 <- list(
       "24057", # Pontiac—Kitigan Zibi
       "24005"  # Argenteuil—La Petite-Nation
     ),
-    "coordinates" = c("xmin" = -76.03, "xmax" = -75.47, "ymin" = 45.17, "ymax" = 45.53)
+    "coordinates" = c("xmin" = -76.0, "xmax" = -75.5, "ymin" = 45.2, "ymax" = 45.5)
   ),
   "vancouver" = list(
     "ridings" = c(
@@ -216,7 +216,7 @@ city_mapping_canada_2025 <- list(
       "35032", # Flamborough—Glanbrook—Brant-Nord
       "35039"  # Hamilton-Ouest—Ancaster—Dundas
     ),
-    "coordinates" = c("xmin" = -80.78, "xmax" = -80.22, "ymin" = 43.33, "ymax" = 43.67)
+    "coordinates" = c("xmin" = -80.8, "xmax" = -80.2, "ymin" = 43.3, "ymax" = 43.7)
   ),
   "london" = list(
     "ridings" = c(
@@ -226,7 +226,7 @@ city_mapping_canada_2025 <- list(
       "35027", # Elgin—St. Thomas—London-Sud
       "35059"  # Middlesex—London
     ),
-    "coordinates" = c("xmin" = -81.55, "xmax" = -80.98, "ymin" = 42.78, "ymax" = 43.13)
+    "coordinates" = c("xmin" = -81.46, "xmax" = -81.07, "ymin" = 42.8, "ymax" = 43.1)
   )
 )
 
