@@ -197,7 +197,7 @@ city_mapping_canada_2025 <- list(
       "46007", # Mont-Riding
       "46009"  # Selkirk—Interlake—Eastman
     ),
-    "coordinates" = c("xmin" = -97.28, "xmax" = -96.72, "ymin" = 49.73, "ymax" = 50.08)
+    "coordinates" = c("xmin" = -123.28, "xmax" = -122.72, "ymin" = 49.08, "ymax" = 49.44)
   ),
   "kitchener_waterloo" = list(
     "ridings" = c(
