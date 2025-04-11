@@ -4,13 +4,18 @@
 .RData
 .Ruserdata
 *.Rproj
+# Large data files
+*.csv
+*.tar.gz
+data-raw/data/census_canada_2022_electoral_ridings/*.csv
+clean_cartessn/
+temp-build/
+dist/*.tar.gz
 # Files with encoding issues
 data-raw/data/canada_2022_electoral_ridings/shapefiles/*/*.docx
 data-raw/data/canada_2022_electoral_ridings/shapefiles/*/*/*.docx
 data-raw/data/canada_2022_electoral_ridings/shapefiles/*/METADATA/*écoupa*
 data-raw/data/canada_2022_electoral_ridings/shapefiles/*/*/METADATA/*écoupa*
-# Temporary files
-temp-build/
 # Misc
 *.bak
 *.log
