@@ -178,7 +178,7 @@ city_mapping_canada_2025 <- list(
       "59042", # Victoria
       "59043"  # West Vancouver—Sunshine Coast—Sea to Sky Country
     ),
-    "coordinates" = c("xmin" = -123.09, "xmax" = -122.51, "ymin" = 49.03, "ymax" = 49.38)
+    "coordinates" = c("xmin" = -123.5, "xmax" = -122.1, "ymin" = 48.8, "ymax" = 49.6)
   ),
   "winnipeg" = list(
     "ridings" = c(
